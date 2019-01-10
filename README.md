@@ -23,3 +23,17 @@ groups containers that make up an application into logical units for easy manage
    - w/o rebuilding your image and w/o exposing secrets in your stack configuration
 7. batch execution - batch and CI workloads, replacing containers that fail, if desired.
 8. horizontal scaling
+
+## Setup
+### Local Machine Solutions
+* Minikube 
+  - single node kubernetes cluster
+* Minishift 
+  - community version of kubernetes enterprise platform
+  - Openshift for local development & testing.
+* microk8s
+  - single command installation of latest kubernetes release.
+* IBM Cloud Private-CE or IBM Cloud Private-CE on Linux Containers
+* kubadm-dind
+  - multinode (while minikube is single-node) kubernetes cluster. only requires a docker daemon. docker-in-docker to spawn the kubernetes cluster.
+* Ubuntu on LXD supports a nine-instance deployment on localhost.
