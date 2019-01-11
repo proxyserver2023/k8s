@@ -37,3 +37,17 @@ groups containers that make up an application into logical units for easy manage
 * kubadm-dind
   - multinode (while minikube is single-node) kubernetes cluster. only requires a docker daemon. docker-in-docker to spawn the kubernetes cluster.
 * Ubuntu on LXD supports a nine-instance deployment on localhost.
+
+## Creating a custom cluster from scratch
+### Designing and Preparing
+* Cloud Provider
+  * provides an interface for managing TCP Load Balancers, Nodes(instances) and Networking Routes
+  * **TCP Load Balancer** - verifies information sent to IP addresses. ensures the data arrives error-free to non-HTTP applications.
+* Nodes
+  * **x86_64 architecture** - 
+* Network
+  * container to container - solved by pods
+  * pod to pod
+  * pod to service - services
+  * external to service - services
+  
