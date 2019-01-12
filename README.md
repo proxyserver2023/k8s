@@ -3,7 +3,21 @@ automatic deployment, scaling and management of containerized applications.
 
 groups containers that make up an application into logical units for easy management and discovery.
 
-## Kubernetes Basic Features
+K8s is not a mere orchestration system, it eliminates the need for orchestration. 
+
+The technical definition of orchestrationis is execution of  a defined workflow. First Do A -> then B -> then C.
+
+In contrast, K8s is a set of independent, composable control processes that continuously drive the current state towards the provided desired state.
+
+## Table of Contents
+- Why
+- Concepts
+- kubernetes basics
+- Setup
+- Creating a custom cluster from scratch
+- Launch a single node kubernetes cluster
+
+## Why - k8s Basic Features
 1. Service Discovery
    - kubernetes gives containers their own IP addresses and a single DNS name for a set of containers and can load-balance across them
 2. Automatic Binpacking
@@ -23,6 +37,54 @@ groups containers that make up an application into logical units for easy manage
    - w/o rebuilding your image and w/o exposing secrets in your stack configuration
 7. batch execution - batch and CI workloads, replacing containers that fail, if desired.
 8. horizontal scaling
+
+## Concepts
+It orchestrates computing, networking, and storage infrastructure on behalf of user workloads
+
+- **Labels** organize resources
+- **Annotation** decorate resources with custom info
+
+Os level virtualization rather than Hardware level virtualization. containers are isolated from each other and from the host. they have their own filesystems, they can't see each others porcesses, and their computational resources usage can be bounded.
+
+## k8s basics
+
+``` bash
+minikube start
+minikube dashboard
+kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
+kubectl get deployments
+kubectl get pods
+kubectl get events
+kubectl config view
+kubectl expose deployment hello-node --type=LoadBalancer --port=8080
+minikube service hello-node
+minikube addons list
+minikube addons enable heapster
+
+kubectl get pod,svc -n kube-system
+# Outputs
+# ---------------------------------------------------------------------------------------
+# NAME                                        READY   STATUS              RESTARTS   AGE
+# pod/coredns-c4cffd6dc-942td                 1/1     Running             2          34d
+# pod/etcd-minikube                           1/1     Running             0          2h
+# pod/heapster-7nnvr                          0/1     ContainerCreating   0          3s
+# pod/influxdb-grafana-8r4cz                  0/2     ContainerCreating   0          3s
+# pod/kube-addon-manager-minikube             1/1     Running             2          34d
+# pod/kube-apiserver-minikube                 1/1     Running             0          2h
+# pod/kube-controller-manager-minikube        1/1     Running             0          2h
+# pod/kube-dns-86f4d74b45-nlhq5               3/3     Running             8          34d
+# pod/kube-proxy-8cv5s                        1/1     Running             0          2h
+# pod/kube-scheduler-minikube                 1/1     Running             0          2h
+# pod/kubernetes-dashboard-6f4cfc5d87-ljdqg   1/1     Running             5          34d
+# pod/storage-provisioner                     1/1     Running             5          34d
+# 
+# NAME                           TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+# service/heapster               ClusterIP   10.104.225.26    <none>        80/TCP              3s
+# service/kube-dns               ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP       34d
+# service/kubernetes-dashboard   ClusterIP   10.96.163.75     <none>        80/TCP              34d
+# service/monitoring-grafana     NodePort    10.110.218.199   <none>        80:30002/TCP        3s
+# service/monitoring-influxdb    ClusterIP   10.108.148.52    <none>        8083/TCP,8086/TCP   3s
+```
 
 ## Setup
 ### Local Machine Solutions
@@ -89,7 +151,7 @@ groups containers that make up an application into logical units for easy manage
    - recommended approach
    - configure certs can be tricky
 
-## Launch a single node kubernetes cluster
+## Launch a single node k8s cluster
 Minikube - single node k8s cluster inside a vm on your laptop
 
 ``` bash
@@ -137,3 +199,4 @@ export PORT=$(kubectl get svc first-deployment -o go-template='{{range.spec.port
 echo "Accessing host01:$PORT"
 curl host01:$PORT
 ```
+
