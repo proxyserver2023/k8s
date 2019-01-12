@@ -38,6 +38,7 @@ groups containers that make up an application into logical units for easy manage
   - multinode (while minikube is single-node) kubernetes cluster. only requires a docker daemon. docker-in-docker to spawn the kubernetes cluster.
 * Ubuntu on LXD supports a nine-instance deployment on localhost.
 
+
 ## Creating a custom cluster from scratch
 ### Designing and Preparing
 * Cloud Provider
@@ -50,4 +51,91 @@ groups containers that make up an application into logical units for easy manage
   * pod to pod
   * pod to service - services
   * external to service - services
-  
+* Docker Model
+* Kubernetes Model
+  * all containers can communicate with all other containers w/o NAT
+  * all nodes can communicate with all containers (and vice-versa) w/o NAT
+  * the IP that a container sees itself as is the same IP that others see it as.
+  * In previous, your VM had an IP and could talk to other VMs in your project. 
+#### Network
+* Network connectivity
+  - Kubernetes allocates an IP address to each pod.
+  - a block of IPs for kubernetes to use as Pod IPs.
+  - allocate a different block of IPs to each node in the cluster as the node is added.
+  - a process of one pod should be able to communicate with another pod using the IP of the second pod.
+	- overlay network
+		- traffic encapsulation (vxlan)
+		- might have performance issue
+	- w/o overlay
+		- configure the underlying network fabric(switches, routers) to be aware of pod IP addresses.
+		- comparatively performant
+	- network plugin called by k8s
+		- CNI Plugin interface
+#### Components
+1. etcd - inside docker as a docker container
+2. docker - outside of docker container as system daemon
+3. Kubernetes
+   - kubelet - outside of docker container as system daemon
+   - kube-proxy - outside of docker container as system daemon
+   - kube-apiserver - inside docker as a docker container
+   - kube-controller-manager - inside docker as a docker container
+   - kube-scheduler - inside docker as a docker container
+#### Security Models
+1. Access the APIServer using http
+   - firewall/security
+   - easier
+2. using HTTPS
+   - https with certs, and credentials for user
+   - recommended approach
+   - configure certs can be tricky
+
+## Launch a single node kubernetes cluster
+Minikube - single node k8s cluster inside a vm on your laptop
+
+``` bash
+minikube version
+minikube start
+
+# minikube started a VM, kube cluster is running in that VM
+# ----------------------------------------------------------
+# starting kube cluster 
+# starting VM
+# getting VM IP address
+# moving files to cluster
+# setting up certs
+# connecting to cluster
+# setting up kubeconfig
+# starting cluster components
+# kubectl is now configured to use the cluster
+# loading cached images from the config file
+```
+* Cluster Info
+  - Details of the cluster and health status can be discovered via 
+
+```bash
+kubectl cluster-info
+# Outputs
+# --------
+# Kubernetes master is running at https://192.168.99.100:8443
+# CoreDNS is running at https://192.168.99.100:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+```
+
+* get nodes
+
+``` bash
+kubectl get nodes
+```
+
+``` bash
+kubectl run first-deployment --image=katacoda/docker-http-server --port=80
+```
+
+``` bash
+kubectl get pods
+```
+
+``` bash
+export PORT=$(kubectl get svc first-deployment -o go-template='{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}')
+echo "Accessing host01:$PORT"
+curl host01:$PORT
+```
