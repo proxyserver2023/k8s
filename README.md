@@ -46,6 +46,10 @@ It orchestrates computing, networking, and storage infrastructure on behalf of u
 
 Os level virtualization rather than Hardware level virtualization. containers are isolated from each other and from the host. they have their own filesystems, they can't see each others porcesses, and their computational resources usage can be bounded.
 
+**Kubernetes Master** - three processes: kube-apiserver, kube-controller-manager, kube-scheduler
+
+**Kubernetes Non-Master** - two proceses: kubelet, kube-proxy
+
 ## k8s basics
 
 ``` bash
@@ -84,6 +88,19 @@ kubectl get pod,svc -n kube-system
 # service/kubernetes-dashboard   ClusterIP   10.96.163.75     <none>        80/TCP              34d
 # service/monitoring-grafana     NodePort    10.110.218.199   <none>        80:30002/TCP        3s
 # service/monitoring-influxdb    ClusterIP   10.108.148.52    <none>        8083/TCP,8086/TCP   3s
+
+minikube addons disable heapster
+```
+
+``` bash
+# Clean up
+kubectl delete service hello-node
+kubectl delete deployment hello-node
+```
+
+``` bash
+minikube stop
+minikube delete
 ```
 
 ## Setup
