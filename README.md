@@ -16,6 +16,7 @@ In contrast, K8s is a set of independent, composable control processes that cont
 - Setup
 - Creating a custom cluster from scratch
 - Launch a single node kubernetes cluster
+- Getting Started with Kubeadm
 
 ## Why - k8s Basic Features
 1. Service Discovery
@@ -217,3 +218,106 @@ echo "Accessing host01:$PORT"
 curl host01:$PORT
 ```
 
+## Getting Started with Kubeadm
+### Initialize Master
+The first stage of initialising the cluster is to launch the master node. The master is responsible for running the control plane components, etcd and the API server. Clients will communicate to the API to schedule workloads and manage the state of the cluster.
+
+``` bash
+kubeadm init --token=102952.1a7dd4cc8d1f4cc5 --kubernetes-version $(kubeadm version -o short)
+
+sudo cp /etc/kubernetes/admin.conf $HOME/
+sudo chown $(id -u):$(id -g) $HOME/admin.conf
+export KUBECONFIG=$HOME/admin.conf
+
+```
+
+### Join Cluster
+
+``` shell
+kubeadm token list
+```
+
+On the Second Node
+
+``` shell
+kubeadm join --discovery-token-unsafe-skip-ca-verification --token=102952.1a7dd4cc8d1f4cc5 172.17.0.20:6443
+```
+
+`--discovery-token-unsafe-skip-ca-verification` is used to bypass the Discovery token verfication.
+
+### View Nodes
+
+``` shell
+kubectl get nodes
+```
+
+The Nodes are not ready, cause CNI has not been deployed.
+
+### Deploy CNI
+The Container Network Interface (CNI) defines how the different nodes and their workloads should communicate. 
+
+* On Master
+
+``` shell
+cat /opt/weave-kube
+kubectl apply -f /opt/weave-kube // master
+kubectl get pod -n kube-system // master
+
+kubectl run http --image=katacoda/docker-http-server:latest --replicas=1 // master
+kubectl get pods // master
+docker ps | grep docker-http-server // 2nd node
+```
+
+
+## Deploy Containers using YAML
+* Deployment file
+``` yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+    name: webapp1
+spec:
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: webapp1
+        spec:
+            containers:
+            - name: webapp1
+              image: katacoda/docker-http-server:latest
+              ports:
+              - containerPort: 80
+```
+
+* `kubectl create -f deployment.yaml`
+* `kubectl get deployment`
+* `kubectl describe deployment webapp1`
+* Service
+  - The Service selects all applications with the label webapp1. As multiple replicas, or instances, are deployed, they will be automatically load balanced based on this common label. The Service makes the application available via a NodePort.
+
+``` yaml
+# This is your Editor pane.
+apiVersion: v1
+kind: Service
+metadata:
+    name: webapp1-svc
+    labels:
+        app: webapp1
+spec:
+    type: NodePort
+    ports:
+    - port: 80
+      nodePort: 30080
+    selector:
+        app: webapp1
+```
+* `kubectl create -f service.yaml`
+* `kubectl get svc`
+* `kubectl describe svc webapp1-svc`
+* `curl host01:30080`
+### Scale Deployment
+* `kubectl apply -f deployment.yaml`
+* `kubectl get deployment`
+* `kubectl get pods`
+* `curl host01:30080`
