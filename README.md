@@ -47,6 +47,12 @@ It orchestrates computing, networking, and storage infrastructure on behalf of u
 - **Kubernetes Master** - three processes: kube-apiserver, kube-controller-manager, kube-scheduler
 - **Kubernetes Non-Master** - two proceses: kubelet, kube-proxy
 
+
+### Required Fields for `.yaml` file
+1. `apiVersion`
+2. `kind`
+3. `metadata` - Data that helps uniquely identify the object, including a name string, UID, and optional namespace
+
 ## k8s commands
 ``` bash
 minikube start
