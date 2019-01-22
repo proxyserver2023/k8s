@@ -491,3 +491,27 @@ minikube stop
 minikube delete
 ```
 
+
+## Deploying an Application
+
+``` shell
+kubectl run kubernete-bootcamp \
+	--image=gcr.io/google-samples/kubernetes-bootcamp:v1 \
+	--port=8080
+```
+1. searches for a suitable node where an instance of the application could be run.
+2. scheduled the application to run on that Node
+3. configured the cluster to reschedule the instance on a new Node when needed.
+
+``` shell
+kubectl get deployments
+```
+
+Pods that are running inside k8s are running on a private, isolated network. By default, they are visible from other pods and services within the same k8s cluster, but not outside that network.
+
+The kubectl command can create a proxy that will forward communications into the cluster-wide, private network.
+
+``` shell
+kubectl proxy
+```
+
