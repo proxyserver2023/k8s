@@ -41,17 +41,13 @@
 ## Concepts
 It orchestrates computing, networking, and storage infrastructure on behalf of user workloads
 
-- **Labels** organize resources
-- **Annotation** decorate resources with custom info
+- **Labels** - organize resources
+- **Annotation** - decorate resources with custom info
+- **Virtualization** - Os level virtualization rather than Hardware level virtualization. containers are isolated from each other and from the host. they have their own filesystems, they can't see each others porcesses, and their computational resources usage can be bounded.
+- **Kubernetes Master** - three processes: kube-apiserver, kube-controller-manager, kube-scheduler
+- **Kubernetes Non-Master** - two proceses: kubelet, kube-proxy
 
-Os level virtualization rather than Hardware level virtualization. containers are isolated from each other and from the host. they have their own filesystems, they can't see each others porcesses, and their computational resources usage can be bounded.
-
-**Kubernetes Master** - three processes: kube-apiserver, kube-controller-manager, kube-scheduler
-
-**Kubernetes Non-Master** - two proceses: kubelet, kube-proxy
-
-## k8s basics
-
+## k8s commands
 ``` bash
 minikube start
 minikube dashboard
@@ -116,7 +112,6 @@ minikube delete
 * kubadm-dind
   - multinode (while minikube is single-node) kubernetes cluster. only requires a docker daemon. docker-in-docker to spawn the kubernetes cluster.
 * Ubuntu on LXD supports a nine-instance deployment on localhost.
-
 
 ## Creating a custom cluster from scratch
 ### Designing and Preparing
@@ -266,7 +261,6 @@ kubectl run http --image=katacoda/docker-http-server:latest --replicas=1 // mast
 kubectl get pods // master
 docker ps | grep docker-http-server // 2nd node
 ```
-
 
 ## Deploy Containers using YAML
 * Deployment file
