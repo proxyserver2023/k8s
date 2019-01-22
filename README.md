@@ -56,6 +56,29 @@ It orchestrates computing, networking, and storage infrastructure on behalf of u
 ### Names
 All objects in the Kubernetes REST API are unambiguously identified by a Name and a UID.
 
+### Namespaces
+K8s supports multiple virtual clusters backed by the same physical cluster. These virtual clusters are called namespaces.
+```shell
+kubectl get namespaces
+```
+
+* Output:
+```
+NAME          STATUS   AGE
+------------------------------
+default       Active   9m38s
+kube-public   Active   9m34s
+kube-system   Active   9m37s
+```
+
+```shell
+# In a namespace
+$ kubectl api-resources --namespaced=true
+
+# Not in a namespace
+$ kubectl api-resources --namespaced=false
+```
+
 ## k8s commands
 ``` bash
 minikube start
