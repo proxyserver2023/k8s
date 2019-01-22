@@ -1,13 +1,12 @@
 # Kubernetes Primer
-automatic deployment, scaling and management of containerized applications.
-
-groups containers that make up an application into logical units for easy management and discovery.
-
-K8s is not a mere orchestration system, it eliminates the need for orchestration. 
-
-The technical definition of orchestrationis is execution of  a defined workflow. First Do A -> then B -> then C.
-
-In contrast, K8s is a set of independent, composable control processes that continuously drive the current state towards the provided desired state.
+1. Automatic Deployment
+2. Scaling
+3. Management of containerized applications
+4. Groups containers that make up an application into logical units for easy management and discovery.
+5. K8s is not a mere orchestration system, it eliminates the need for orchestration. 
+6. The technical definition of orchestration is execution of a defined workflow. 
+   - First Do A -> then B -> then C.
+7. In contrast, K8s is a set of independent, composable control processes that continuously drive the current state towards the provided desired state.
 
 ## Table of Contents
 - Why
