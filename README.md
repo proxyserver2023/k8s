@@ -53,6 +53,9 @@ It orchestrates computing, networking, and storage infrastructure on behalf of u
 2. `kind`
 3. `metadata` - Data that helps uniquely identify the object, including a name string, UID, and optional namespace
 
+### Names
+All objects in the Kubernetes REST API are unambiguously identified by a Name and a UID.
+
 ## k8s commands
 ``` bash
 minikube start
