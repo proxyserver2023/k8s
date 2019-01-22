@@ -79,6 +79,10 @@ $ kubectl api-resources --namespaced=true
 $ kubectl api-resources --namespaced=false
 ```
 
+### Labels and Selectors
+* **Labels** - Labels can be used to organize and to select subsets of objects.
+Labels allow for efficient queries and watches and are ideal for use in UIs and CLIs. Non-identifying information should be recorded using annotations.
+
 ## k8s commands
 ``` bash
 minikube start
