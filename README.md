@@ -363,3 +363,131 @@ spec:
 * `kubectl get deployment`
 * `kubectl get pods`
 * `curl host01:30080`
+# Tutorial
+## Hello Minikube
+1. create a deployment that manages a pod. the pod runs a container based on the provided Docker image.
+``` shell
+kubectl create deployment \
+	hello-node \ 
+	--image=gcr.io/hello-minikube-zero-install/hello-node
+```
+
+2. view the deployment
+``` shell
+kubectl get deployments
+```
+
+3. view the pod
+``` shell
+kubectl get pods
+```
+
+4. view the `kubectl` configuration
+``` shell
+kubectl config view
+```
+Output:
+
+``` yaml
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: /home/alamin/.minikube/ca.crt
+    server: https://192.168.99.100:8443
+  name: minikube
+contexts:
+- context:
+    cluster: minikube
+    user: minikube
+  name: minikube
+current-context: minikube
+kind: Config
+preferences: {}
+users:
+- name: minikube
+  user:
+    client-certificate: /home/alamin/.minikube/client.crt
+    client-key: /home/alamin/.minikube/client.key
+```
+
+5. Create a service
+By default, the Pod is only accessible by its internal IP address within the kubernetes cluster. To make the `hello-node` container accessible from outside the k8s virtual network, you have to expose the pod as kubernetes `Service`.
+
+6. Expose the pod to the public internet using the `kubectl expose` command:
+``` shell
+kubectl expose deployment hello-node --type=LoadBalancer --port=8080
+```
+7. view the services you just created:
+``` shell
+kubectl get services
+```
+Output:
+``` shell
+NAME         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+hello-node   LoadBalancer   10.105.34.93   <pending>     8080:30189/TCP   50s
+kubernetes   ClusterIP      10.96.0.1      <none>        443/TCP          1d
+```
+
+8. `minikube service hello-world`
+9. list the currently supported addons:
+`minikube addons list`
+Output:
+
+``` 
+minikube addons list 
+- addon-manager: enabled
+- coredns: enabled
+- dashboard: enabled
+- default-storageclass: enabled
+- efk: disabled
+- freshpod: disabled
+- heapster: disabled
+- ingress: disabled
+- kube-dns: disabled
+- metrics-server: disabled
+- nvidia-driver-installer: disabled
+- nvidia-gpu-device-plugin: disabled
+- registry: disabled
+- registry-creds: disabled
+- storage-provisioner: enabled
+```
+
+10. to enable an addon: `minikube addons enable <addon_name>`
+11. to disable an addon: `minikube addons disable <addon_name>`
+12. view the pod and service you just created:
+`kubectl get pod, svc -n kube-system`
+Output:
+
+``` shell
+NAME                                        READY   STATUS    RESTARTS   AGE
+pod/coredns-c4cffd6dc-hnmks                 1/1     Running   1          1d
+pod/etcd-minikube                           1/1     Running   0          42m
+pod/kube-addon-manager-minikube             1/1     Running   1          1d
+pod/kube-apiserver-minikube                 1/1     Running   0          42m
+pod/kube-controller-manager-minikube        1/1     Running   0          42m
+pod/kube-dns-86f4d74b45-cr7p7               3/3     Running   5          1d
+pod/kube-proxy-ww2jz                        1/1     Running   0          41m
+pod/kube-scheduler-minikube                 1/1     Running   1          1d
+pod/kubernetes-dashboard-6f4cfc5d87-cmq24   1/1     Running   3          1d
+pod/storage-provisioner                     1/1     Running   2          1d
+
+NAME                           TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)         AGE
+service/kube-dns               ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP   1d
+service/kubernetes-dashboard   ClusterIP   10.108.163.109   <none>        80/TCP          1d
+```
+13. clean up
+``` shell
+kubectl delete service hello-node
+kubectl delete deployment hello-node
+```
+
+14. stop the minikube VM
+``` shell
+minikube stop
+```
+
+15. Optionally delete the Minikube VM:
+``` shell
+minikube delete
+```
+
