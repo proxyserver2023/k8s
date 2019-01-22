@@ -83,6 +83,19 @@ $ kubectl api-resources --namespaced=false
 * **Labels** - Labels can be used to organize and to select subsets of objects.
 Labels allow for efficient queries and watches and are ideal for use in UIs and CLIs. Non-identifying information should be recorded using annotations.
 
+### Annotations
+You can use Kubernetes annotations to attach arbitrary non-identifying metadata to objects. Clients such as tools and libraries can retrieve this metadata.
+
+```json
+"metadata": {
+  "annotations": {
+    "key1" : "value1",
+    "key2" : "value2"
+  }
+}
+
+```
+
 ## k8s commands
 ``` bash
 minikube start
