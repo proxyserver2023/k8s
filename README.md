@@ -9,15 +9,24 @@
 7. In contrast, K8s is a set of independent, composable control processes that continuously drive the current state towards the provided desired state.
 
 ## Table of Contents
-- Why
-- Concepts
-- kubernetes basics
-- Setup
-- Creating a custom cluster from scratch
-- Launch a single node kubernetes cluster
-- Getting Started with Kubeadm
+- [Why](#Why)
+- [Concepts](#Concepts)
+- [kubernetes Basics](#kubernetes-basics)
+- [Local Machine Solutions](#local-machine-solutions)
+- [K8s Tutorial](#k8s-tutorial)
+  - [Hello Minikube](#hello-minikube)
+  - [Deploying an Application](#deploying-an-application)
+  - [Viewing Pods and Nodes](#viewing-pods-and-nodes)
+  - [Exploring your application](#exploring-your-application)
+  - [Service to expose your app](#service-to-expose-your-app)
+  - [Performing a rolling update](#performing-a-rolling-update)
+  - [Creating a custom cluster from scratch](#creating-a-custom-cluster-from-scratch)
+  - [Launch a single node k8s cluster](#launch-a-single-node-k8s-cluster)
+  - [Getting Started with Kubeadm](#getting-started-with-kubeadm)
+  - [Deploy Containers using YAML](#deploy-containers-using-yaml)
+  - [Configuing Redis using a ConfigMap](#configuring-redis-using-a-configmap)
 
-## Why - k8s Basic Features
+## Why
 1. Service Discovery
    - kubernetes gives containers their own IP addresses and a single DNS name for a set of containers and can load-balance across them
 2. Automatic Binpacking
