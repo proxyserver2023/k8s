@@ -515,3 +515,55 @@ The kubectl command can create a proxy that will forward communications into the
 kubectl proxy
 ```
 
+### Viewing Pods and Nodes
+The containers in a Pod share -
+1. an IP Address
+2. an Port Space
+3. always co-located and co-scheduled.
+4. and run in a shared context on the same node.
+
+Every k8s node runs at least -
+1. `kubelet` a process responsible for communication between the k8s master and the node. it manages pods and containers of that node.
+2. A container RT like (docker, rkt) responsible for pulling the container image from a registry, unpacking the container and running the application.
+
+### Troubleshooting with `kubectl`
+1. `kubectl get` - list resources
+2. `kubelet describe` - show detailed information about a resource.
+3. `kubectl logs` - print the logs from a container in a pod.
+4. `kubectl exec` - execute a command on a container in a pod.
+
+### Exploring your application
+1. get pod name
+
+``` shell
+export POD_NAME=$(kubectl get pods -o go-template --template \
+	'{{range .items}} \
+		{{.metadata.name}} \
+		{{"\n"}}
+	 {{end}}'
+	)
+echo Name of the POD: -> $POD_NAME
+```
+
+2. output of our application run a curl
+``` shell
+curl http://localhost:8001/api/v1/namespaces/default/pods/$POD_NAME/proxy/
+```
+The url is the route to the API of the Pod.
+
+3. View the container logs
+``` shell
+kubectl logs $POD_NAME
+```
+
+4. execute a command inside a pod's container
+``` shell
+kubectl exec $POD_NAME env
+```
+Since we have only single container inside that pod, so mentioning the name won't be necessary.
+
+5. start a bash session in a pod's container
+``` shell
+kubectl exec -ti $POD_NAME bash
+```
+
