@@ -665,7 +665,14 @@ echo NODE_PORT=$NODE_PORT
 curl $(minikube ip):$NODE_PORT
 ```
 14. the update can be confirmed by running a roll-out status
-
 ``` shell
 kubectl rollout status deployments/kubernetes-bootcamp
 ```
+15. rollback to previous state
+``` shell
+kubectl rollout undo deployments/kubernetes-bootcamp
+```
+The rollout command reverted the deployment to the previous known state (v2 of the image). Updates are versioned and you can revert to any previously know state of a Deployment
+
+## Configuring Redis using a ConfigMap
+[Contd.]
