@@ -105,7 +105,7 @@ You can use Kubernetes annotations to attach arbitrary non-identifying metadata 
 
 ```
 
-## k8s commands
+## Kubernetes Basics
 ``` bash
 minikube start
 minikube dashboard
