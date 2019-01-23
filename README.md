@@ -567,3 +567,43 @@ Since we have only single container inside that pod, so mentioning the name won'
 kubectl exec -ti $POD_NAME bash
 ```
 
+### Service to expose your app
+A ReplicaSet might then dynamically drive the cluster back to desired state via creation of new Pods to keep your application running.
+
+A Service in Kubernetes is an abstraction which defines a logical set of Pods and a policy by which to access them. 
+
+The set of pods targeted by a service is usually determined by a LabelSelector.
+
+Service can be exposed by specifying a `type` in the ServiceSpec.
+- ClusterIP (default)
+   - Exposes the Service on an internal IP in the cluster. This type makes the Service only reachable from within the cluster.
+- NodePort
+  - Exposes the Service on the same port of each selected Node in the cluster using NAT. Makes a Service accessible from outside the cluster using <NodeIP>:<NodePort>. Superset of ClusterIP.
+- LoadBalancer
+  - Creates an external  load balancer in the current cloud (if supported) and assigns a fixed, external IP to the Service. Superset of NodePort
+- ExternalName
+  - Exposes the Service using an arbitrary name (specified by externalName in the spec) by returning a CNAME record with the name. No proxy is used.
+
+### Exposing your app commands
+``` shell
+kubectl get pods -l run=kubernetes-bootcamp
+kubectl get services -l run=kubernetes-bootcamp
+export POD_NAME=$(kubectl get pods -o go-template --template \
+	'{{range .items}} \
+		{{.metadata.name}} \
+		{{"\n"}} \
+	{{end}}' \
+)
+echo Name of the Pod: $POD_NAME
+
+kubectl label pod $POD_NAME app=v1
+kubectl describe pods $POD_NAME
+kubectl get pods -l app=v1
+
+kubectl delete service -l run=kubernetes-bootcamp
+kubectl get services
+curl $(minikube ip):$NODE_PORT
+
+kubectl exec -it $POD_NAME curl localhost:8080
+```
+
