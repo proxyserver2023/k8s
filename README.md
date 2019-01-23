@@ -157,8 +157,7 @@ minikube stop
 minikube delete
 ```
 
-## Setup
-### Local Machine Solutions
+## Local Machine Solutions
 * Minikube 
   - single node kubernetes cluster
 * Minishift 
@@ -171,209 +170,8 @@ minikube delete
   - multinode (while minikube is single-node) kubernetes cluster. only requires a docker daemon. docker-in-docker to spawn the kubernetes cluster.
 * Ubuntu on LXD supports a nine-instance deployment on localhost.
 
-## Creating a custom cluster from scratch
-### Designing and Preparing
-* Cloud Provider
-  * provides an interface for managing TCP Load Balancers, Nodes(instances) and Networking Routes
-  * **TCP Load Balancer** - verifies information sent to IP addresses. ensures the data arrives error-free to non-HTTP applications.
-* Nodes
-  * **x86_64 architecture** - 
-* Network
-  * container to container - solved by pods
-  * pod to pod
-  * pod to service - services
-  * external to service - services
-* Docker Model
-* Kubernetes Model
-  * all containers can communicate with all other containers w/o NAT
-  * all nodes can communicate with all containers (and vice-versa) w/o NAT
-  * the IP that a container sees itself as is the same IP that others see it as.
-  * In previous, your VM had an IP and could talk to other VMs in your project. 
-#### Network
-* Network connectivity
-  - Kubernetes allocates an IP address to each pod.
-  - a block of IPs for kubernetes to use as Pod IPs.
-  - allocate a different block of IPs to each node in the cluster as the node is added.
-  - a process of one pod should be able to communicate with another pod using the IP of the second pod.
-	- overlay network
-		- traffic encapsulation (vxlan)
-		- might have performance issue
-	- w/o overlay
-		- configure the underlying network fabric(switches, routers) to be aware of pod IP addresses.
-		- comparatively performant
-	- network plugin called by k8s
-		- CNI Plugin interface
-#### Components
-1. etcd - inside docker as a docker container
-2. docker - outside of docker container as system daemon
-3. Kubernetes
-   - kubelet - outside of docker container as system daemon
-   - kube-proxy - outside of docker container as system daemon
-   - kube-apiserver - inside docker as a docker container
-   - kube-controller-manager - inside docker as a docker container
-   - kube-scheduler - inside docker as a docker container
-#### Security Models
-1. Access the APIServer using http
-   - firewall/security
-   - easier
-2. using HTTPS
-   - https with certs, and credentials for user
-   - recommended approach
-   - configure certs can be tricky
-
-## Launch a single node k8s cluster
-Minikube - single node k8s cluster inside a vm on your laptop
-
-``` bash
-minikube version
-minikube start
-
-# minikube started a VM, kube cluster is running in that VM
-# ----------------------------------------------------------
-# starting kube cluster 
-# starting VM
-# getting VM IP address
-# moving files to cluster
-# setting up certs
-# connecting to cluster
-# setting up kubeconfig
-# starting cluster components
-# kubectl is now configured to use the cluster
-# loading cached images from the config file
-```
-* Cluster Info
-  - Details of the cluster and health status can be discovered via 
-
-```bash
-kubectl cluster-info
-# Outputs
-# --------
-# Kubernetes master is running at https://192.168.99.100:8443
-# CoreDNS is running at https://192.168.99.100:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
-```
-
-``` bash
-kubectl get nodes
-```
-
-``` bash
-kubectl run first-deployment --image=katacoda/docker-http-server --port=80
-```
-
-``` bash
-kubectl get pods
-```
-
-``` bash
-export PORT=$(kubectl get svc first-deployment -o go-template='{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}')
-echo "Accessing host01:$PORT"
-curl host01:$PORT
-```
-
-## Getting Started with Kubeadm
-### Initialize Master
-The first stage of initialising the cluster is to launch the master node. The master is responsible for running the control plane components, etcd and the API server. Clients will communicate to the API to schedule workloads and manage the state of the cluster.
-
-``` bash
-kubeadm init --token=102952.1a7dd4cc8d1f4cc5 --kubernetes-version $(kubeadm version -o short)
-
-sudo cp /etc/kubernetes/admin.conf $HOME/
-sudo chown $(id -u):$(id -g) $HOME/admin.conf
-export KUBECONFIG=$HOME/admin.conf
-
-```
-
-### Join Cluster
-
-``` shell
-kubeadm token list
-```
-
-On the Second Node
-
-``` shell
-kubeadm join --discovery-token-unsafe-skip-ca-verification --token=102952.1a7dd4cc8d1f4cc5 172.17.0.20:6443
-```
-
-`--discovery-token-unsafe-skip-ca-verification` is used to bypass the Discovery token verfication.
-
-### View Nodes
-
-``` shell
-kubectl get nodes
-```
-
-The Nodes are not ready, cause CNI has not been deployed.
-
-### Deploy CNI
-The Container Network Interface (CNI) defines how the different nodes and their workloads should communicate. 
-
-* On Master
-
-``` shell
-cat /opt/weave-kube
-kubectl apply -f /opt/weave-kube // master
-kubectl get pod -n kube-system // master
-
-kubectl run http --image=katacoda/docker-http-server:latest --replicas=1 // master
-kubectl get pods // master
-docker ps | grep docker-http-server // 2nd node
-```
-
-## Deploy Containers using YAML
-* Deployment file
-``` yaml
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-    name: webapp1
-spec:
-    replicas: 1
-    template:
-        metadata:
-            labels:
-                app: webapp1
-        spec:
-            containers:
-            - name: webapp1
-              image: katacoda/docker-http-server:latest
-              ports:
-              - containerPort: 80
-```
-
-* `kubectl create -f deployment.yaml`
-* `kubectl get deployment`
-* `kubectl describe deployment webapp1`
-* Service
-  - The Service selects all applications with the label webapp1. As multiple replicas, or instances, are deployed, they will be automatically load balanced based on this common label. The Service makes the application available via a NodePort.
-
-``` yaml
-# This is your Editor pane.
-apiVersion: v1
-kind: Service
-metadata:
-    name: webapp1-svc
-    labels:
-        app: webapp1
-spec:
-    type: NodePort
-    ports:
-    - port: 80
-      nodePort: 30080
-    selector:
-        app: webapp1
-```
-* `kubectl create -f service.yaml`
-* `kubectl get svc`
-* `kubectl describe svc webapp1-svc`
-* `curl host01:30080`
-### Scale Deployment
-* `kubectl apply -f deployment.yaml`
-* `kubectl get deployment`
-* `kubectl get pods`
-* `curl host01:30080`
-# Tutorial
-## Hello Minikube
+## K8s Tutorial
+### Hello Minikube
 1. create a deployment that manages a pod. the pod runs a container based on the provided Docker image.
 ``` shell
 kubectl create deployment \
@@ -501,8 +299,7 @@ minikube delete
 ```
 
 
-## Deploying an Application
-
+### Deploying an Application
 ``` shell
 kubectl run kubernete-bootcamp \
 	--image=gcr.io/google-samples/kubernetes-bootcamp:v1 \
@@ -535,7 +332,7 @@ Every k8s node runs at least -
 1. `kubelet` a process responsible for communication between the k8s master and the node. it manages pods and containers of that node.
 2. A container RT like (docker, rkt) responsible for pulling the container image from a registry, unpacking the container and running the application.
 
-### Troubleshooting with `kubectl`
+#### Troubleshooting with `kubectl`
 1. `kubectl get` - list resources
 2. `kubelet describe` - show detailed information about a resource.
 3. `kubectl logs` - print the logs from a container in a pod.
@@ -593,7 +390,7 @@ Service can be exposed by specifying a `type` in the ServiceSpec.
 - ExternalName
   - Exposes the Service using an arbitrary name (specified by externalName in the spec) by returning a CNAME record with the name. No proxy is used.
 
-### Exposing your app commands
+#### Exposing your app commands
 ``` shell
 kubectl get pods -l run=kubernetes-bootcamp
 kubectl get services -l run=kubernetes-bootcamp
@@ -683,5 +480,207 @@ kubectl rollout undo deployments/kubernetes-bootcamp
 ```
 The rollout command reverted the deployment to the previous known state (v2 of the image). Updates are versioned and you can revert to any previously know state of a Deployment
 
-## Configuring Redis using a ConfigMap
+### Creating a custom cluster from scratch
+#### Designing and Preparing
+* Cloud Provider
+  * provides an interface for managing TCP Load Balancers, Nodes(instances) and Networking Routes
+  * **TCP Load Balancer** - verifies information sent to IP addresses. ensures the data arrives error-free to non-HTTP applications.
+* Nodes
+  * **x86_64 architecture** - 
+* Network
+  * container to container - solved by pods
+  * pod to pod
+  * pod to service - services
+  * external to service - services
+* Docker Model
+* Kubernetes Model
+  * all containers can communicate with all other containers w/o NAT
+  * all nodes can communicate with all containers (and vice-versa) w/o NAT
+  * the IP that a container sees itself as is the same IP that others see it as.
+  * In previous, your VM had an IP and could talk to other VMs in your project. 
+#### Network
+* Network connectivity
+  - Kubernetes allocates an IP address to each pod.
+  - a block of IPs for kubernetes to use as Pod IPs.
+  - allocate a different block of IPs to each node in the cluster as the node is added.
+  - a process of one pod should be able to communicate with another pod using the IP of the second pod.
+	- overlay network
+		- traffic encapsulation (vxlan)
+		- might have performance issue
+	- w/o overlay
+		- configure the underlying network fabric(switches, routers) to be aware of pod IP addresses.
+		- comparatively performant
+	- network plugin called by k8s
+		- CNI Plugin interface
+#### Components
+1. etcd - inside docker as a docker container
+2. docker - outside of docker container as system daemon
+3. Kubernetes
+   - kubelet - outside of docker container as system daemon
+   - kube-proxy - outside of docker container as system daemon
+   - kube-apiserver - inside docker as a docker container
+   - kube-controller-manager - inside docker as a docker container
+   - kube-scheduler - inside docker as a docker container
+#### Security Models
+1. Access the APIServer using http
+   - firewall/security
+   - easier
+2. using HTTPS
+   - https with certs, and credentials for user
+   - recommended approach
+   - configure certs can be tricky
+
+### Launch a single node k8s cluster
+Minikube - single node k8s cluster inside a vm on your laptop
+
+``` bash
+minikube version
+minikube start
+
+# minikube started a VM, kube cluster is running in that VM
+# ----------------------------------------------------------
+# starting kube cluster 
+# starting VM
+# getting VM IP address
+# moving files to cluster
+# setting up certs
+# connecting to cluster
+# setting up kubeconfig
+# starting cluster components
+# kubectl is now configured to use the cluster
+# loading cached images from the config file
+```
+* Cluster Info
+  - Details of the cluster and health status can be discovered via 
+
+```bash
+kubectl cluster-info
+# Outputs
+# --------
+# Kubernetes master is running at https://192.168.99.100:8443
+# CoreDNS is running at https://192.168.99.100:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+```
+
+``` bash
+kubectl get nodes
+```
+
+``` bash
+kubectl run first-deployment --image=katacoda/docker-http-server --port=80
+```
+
+``` bash
+kubectl get pods
+```
+
+``` bash
+export PORT=$(kubectl get svc first-deployment -o go-template='{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}')
+echo "Accessing host01:$PORT"
+curl host01:$PORT
+```
+
+### Getting Started with Kubeadm
+#### Initialize Master
+The first stage of initialising the cluster is to launch the master node. The master is responsible for running the control plane components, etcd and the API server. Clients will communicate to the API to schedule workloads and manage the state of the cluster.
+
+``` bash
+kubeadm init --token=102952.1a7dd4cc8d1f4cc5 --kubernetes-version $(kubeadm version -o short)
+
+sudo cp /etc/kubernetes/admin.conf $HOME/
+sudo chown $(id -u):$(id -g) $HOME/admin.conf
+export KUBECONFIG=$HOME/admin.conf
+
+```
+
+#### Join Cluster
+
+``` shell
+kubeadm token list
+```
+
+On the Second Node
+
+``` shell
+kubeadm join --discovery-token-unsafe-skip-ca-verification --token=102952.1a7dd4cc8d1f4cc5 172.17.0.20:6443
+```
+
+`--discovery-token-unsafe-skip-ca-verification` is used to bypass the Discovery token verfication.
+
+#### View Nodes
+
+``` shell
+kubectl get nodes
+```
+
+The Nodes are not ready, cause CNI has not been deployed.
+
+#### Deploy CNI
+The Container Network Interface (CNI) defines how the different nodes and their workloads should communicate. 
+
+* On Master
+
+``` shell
+cat /opt/weave-kube
+kubectl apply -f /opt/weave-kube // master
+kubectl get pod -n kube-system // master
+
+kubectl run http --image=katacoda/docker-http-server:latest --replicas=1 // master
+kubectl get pods // master
+docker ps | grep docker-http-server // 2nd node
+```
+
+### Deploy Containers using YAML
+* Deployment file
+``` yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+    name: webapp1
+spec:
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: webapp1
+        spec:
+            containers:
+            - name: webapp1
+              image: katacoda/docker-http-server:latest
+              ports:
+              - containerPort: 80
+```
+
+* `kubectl create -f deployment.yaml`
+* `kubectl get deployment`
+* `kubectl describe deployment webapp1`
+* Service
+  - The Service selects all applications with the label webapp1. As multiple replicas, or instances, are deployed, they will be automatically load balanced based on this common label. The Service makes the application available via a NodePort.
+
+``` yaml
+# This is your Editor pane.
+apiVersion: v1
+kind: Service
+metadata:
+    name: webapp1-svc
+    labels:
+        app: webapp1
+spec:
+    type: NodePort
+    ports:
+    - port: 80
+      nodePort: 30080
+    selector:
+        app: webapp1
+```
+* `kubectl create -f service.yaml`
+* `kubectl get svc`
+* `kubectl describe svc webapp1-svc`
+* `curl host01:30080`
+#### Scale Deployment
+* `kubectl apply -f deployment.yaml`
+* `kubectl get deployment`
+* `kubectl get pods`
+* `curl host01:30080`
+
+### Configuring Redis using a ConfigMap
 [Contd.]
