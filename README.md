@@ -607,3 +607,60 @@ curl $(minikube ip):$NODE_PORT
 kubectl exec -it $POD_NAME curl localhost:8080
 ```
 
+### Performing a Rolling Update
+1. Perform a rolling update using `kubectl`.
+2. Users expect applications to be available all the time and developers are expected to deploy new versions of them several times a day.
+3. In Kubernetes this is done with rolling updates. 
+4. Rolling updates allow Deployments' update to take place with zero downtime by incrementally updating Pods instances with new ones.
+5. The new Pods will be scheduled on Nodes with available resources.
+6. get deployments
+``` shell
+kubectl get deployments
+```
+7. To list the running pods use the `get pods` command:
+``` shell
+kubectl get pods
+```
+8. to view the current image version of the app: run a `describe` command.
+``` shell
+kubectl describe pods
+```
+9. Use the `set image` command followed by the deployment name and the new image version:
+``` shell
+kubectl set image deployments/kubernetes-bootcamp \
+	kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v2
+```
+10. Check the status of the old pod terminating and new pod creating
+
+``` shell
+kubectl get pods
+```
+Output:
+
+``` shell
+NAME                                   READY     STATUS        RESTARTS   AGE
+kubernetes-bootcamp-5c69669756-4h999   1/1       Terminating   0          9m
+kubernetes-bootcamp-5c69669756-jksvb   1/1       Terminating   0          9m
+kubernetes-bootcamp-5c69669756-pt8xq   1/1       Terminating   0          9m
+kubernetes-bootcamp-5c69669756-t96bw   1/1       Terminating   0          9m
+kubernetes-bootcamp-7799cbcb86-7bddk   1/1       Running       0          18s
+kubernetes-bootcamp-7799cbcb86-9t6sg   1/1       Running       0          18s
+kubernetes-bootcamp-7799cbcb86-fwmlv   1/1       Running       0          16s
+kubernetes-bootcamp-7799cbcb86-jg98m   1/1       Running       0          16s
+```
+11. Let's check the app is running. to get the describe 
+``` shell
+kubectl describe services/kubernetes-bootcamp
+```
+12. create an environment variable called `NODE_PORT` that has the value of the Node Port assigned.
+``` shell
+export NODE_PORT=$(
+	kubectl get services/kubernetes-bootcamp \
+	-o go-template='{{(index .spec.ports 0).nodePort}}'
+)
+echo NODE_PORT=$NODE_PORT
+```
+13. curl to the exposed ip and port
+``` shell
+curl $(minikube ip):$NODE_PORT
+```
