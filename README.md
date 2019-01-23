@@ -664,3 +664,8 @@ echo NODE_PORT=$NODE_PORT
 ``` shell
 curl $(minikube ip):$NODE_PORT
 ```
+14. the update can be confirmed by running a roll-out status
+
+``` shell
+kubectl rollout status deployments/kubernetes-bootcamp
+```
