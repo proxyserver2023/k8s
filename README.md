@@ -1080,3 +1080,9 @@ Allocated resources:
 Events:              <none>
 ```
 
+Delete your Pod:
+
+``` shell
+kubectl delete pod memory-demo-2 --namespace=mem-example
+```
+[Contd.]
