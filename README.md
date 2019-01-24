@@ -1005,3 +1005,78 @@ Events:
   Warning  BackOff  115s (x292 over 67m)  kubelet, minikube  Back-off restarting failed container
 
 ```
+
+`kubectl describe nodes`
+
+``` shell
+Name:               minikube
+Roles:              master
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    kubernetes.io/hostname=minikube
+                    node-role.kubernetes.io/master=
+Annotations:        node.alpha.kubernetes.io/ttl: 0
+                    volumes.kubernetes.io/controller-managed-attach-detach: true
+CreationTimestamp:  Mon, 21 Jan 2019 22:33:26 +0600
+Taints:             <none>
+Unschedulable:      false
+Conditions:
+  Type             Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
+  ----             ------  -----------------                 ------------------                ------                       -------
+  OutOfDisk        False   Thu, 24 Jan 2019 21:42:10 +0600   Mon, 21 Jan 2019 22:33:16 +0600   KubeletHasSufficientDisk     kubelet has sufficient disk space available
+  MemoryPressure   False   Thu, 24 Jan 2019 21:42:10 +0600   Mon, 21 Jan 2019 22:33:16 +0600   KubeletHasSufficientMemory   kubelet has sufficient memory available
+  DiskPressure     False   Thu, 24 Jan 2019 21:42:10 +0600   Mon, 21 Jan 2019 22:33:16 +0600   KubeletHasNoDiskPressure     kubelet has no disk pressure
+  PIDPressure      False   Thu, 24 Jan 2019 21:42:10 +0600   Mon, 21 Jan 2019 22:33:16 +0600   KubeletHasSufficientPID      kubelet has sufficient PID available
+  Ready            True    Thu, 24 Jan 2019 21:42:10 +0600   Mon, 21 Jan 2019 22:33:16 +0600   KubeletReady                 kubelet is posting ready status
+Addresses:
+  InternalIP:  10.0.2.15
+  Hostname:    minikube
+Capacity:
+ cpu:                2
+ ephemeral-storage:  16888216Ki
+ hugepages-2Mi:      0
+ memory:             2038624Ki
+ pods:               110
+Allocatable:
+ cpu:                2
+ ephemeral-storage:  15564179840
+ hugepages-2Mi:      0
+ memory:             1936224Ki
+ pods:               110
+System Info:
+ Machine ID:                 949b34fe53714c95ba0d084034db2c7b
+ System UUID:                13AED472-A694-48F5-9B47-68FA5853EF6E
+ Boot ID:                    7f8ff744-7abf-491c-bbe8-bc9cbc663cb5
+ Kernel Version:             4.15.0
+ OS Image:                   Buildroot 2018.05
+ Operating System:           linux
+ Architecture:               amd64
+ Container Runtime Version:  docker://17.12.1-ce
+ Kubelet Version:            v1.10.0
+ Kube-Proxy Version:         v1.10.0
+Non-terminated Pods:         (13 in total)
+  Namespace                  Name                                     CPU Requests  CPU Limits  Memory Requests  Memory Limits  AGE
+  ---------                  ----                                     ------------  ----------  ---------------  -------------  ---
+  default                    hello-node-7f5b6bd6b8-mgvwc              0 (0%)        0 (0%)      0 (0%)           0 (0%)         47h
+  kube-system                coredns-c4cffd6dc-hnmks                  100m (5%)     0 (0%)      70Mi (3%)        170Mi (8%)     2d23h
+  kube-system                etcd-minikube                            0 (0%)        0 (0%)      0 (0%)           0 (0%)         70m
+  kube-system                kube-addon-manager-minikube              5m (0%)       0 (0%)      50Mi (2%)        0 (0%)         2d23h
+  kube-system                kube-apiserver-minikube                  250m (12%)    0 (0%)      0 (0%)           0 (0%)         70m
+  kube-system                kube-controller-manager-minikube         200m (10%)    0 (0%)      0 (0%)           0 (0%)         70m
+  kube-system                kube-dns-86f4d74b45-cr7p7                260m (13%)    0 (0%)      110Mi (5%)       170Mi (8%)     2d23h
+  kube-system                kube-proxy-lpn42                         0 (0%)        0 (0%)      0 (0%)           0 (0%)         70m
+  kube-system                kube-scheduler-minikube                  100m (5%)     0 (0%)      0 (0%)           0 (0%)         70m
+  kube-system                kubernetes-dashboard-6f4cfc5d87-cmq24    0 (0%)        0 (0%)      0 (0%)           0 (0%)         2d23h
+  kube-system                metrics-server-85c979995f-zcdh4          0 (0%)        0 (0%)      0 (0%)           0 (0%)         22h
+  kube-system                storage-provisioner                      0 (0%)        0 (0%)      0 (0%)           0 (0%)         2d23h
+  mem-example                memory-demo-2                            0 (0%)        0 (0%)      50Mi (2%)        100Mi (5%)     13h
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource           Requests     Limits
+  --------           --------     ------
+  cpu                915m (45%)   0 (0%)
+  memory             280Mi (14%)  440Mi (23%)
+  ephemeral-storage  0 (0%)       0 (0%)
+Events:              <none>
+```
+
