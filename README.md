@@ -831,4 +831,177 @@ kubectl create -f k8s-website/tasks/pods/resource/memory-request-limit2.yaml \
 	--namespace=mem-example
 ```
 
+View detailed information about the pod:
 
+``` shell
+NAME            READY   STATUS             RESTARTS   AGE
+memory-demo-2   0/1     CrashLoopBackOff   12         11h
+```
+
+More Details:
+
+``` yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2019-01-24T02:36:41Z"
+  name: memory-demo-2
+  namespace: mem-example
+  resourceVersion: "30872"
+  selfLink: /api/v1/namespaces/mem-example/pods/memory-demo-2
+  uid: e1bc61ff-1f80-11e9-b1db-080027a87ba3
+spec:
+  containers:
+  - args:
+    - --vm
+    - "1"
+    - --vm-bytes
+    - 250M
+    - --vm-hang
+    - "1"
+    command:
+    - stress
+    image: polinux/stress
+    imagePullPolicy: Always
+    name: memory-demo-2-ctr
+    resources:
+      limits:
+        memory: 100Mi
+      requests:
+        memory: 50Mi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-9pcb2
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  nodeName: minikube
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: default-token-9pcb2
+    secret:
+      defaultMode: 420
+      secretName: default-token-9pcb2
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2019-01-24T02:36:41Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2019-01-24T14:33:33Z"
+    message: 'containers with unready status: [memory-demo-2-ctr]'
+    reason: ContainersNotReady
+    status: "False"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2019-01-24T02:36:41Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://e73ad654ad797c9f4df4e75f515ed86ef119af8c95d402e285a3bd57e96f9ef9
+    image: polinux/stress:latest
+    imageID: docker-pullable://polinux/stress@sha256:6d1825288ddb6b3cec8d3ac8a488c8ec2449334512ecb938483fc2b25cbbdb9a
+    lastState:
+      terminated:
+        containerID: docker://5e679ae4117899ccb8d71234e12446403497ce4f06a3586de0c0e2210f4bc51a
+        exitCode: 1
+        finishedAt: "2019-01-24T14:33:00Z"
+        reason: OOMKilled
+        startedAt: "2019-01-24T14:33:00Z"
+    name: memory-demo-2-ctr
+    ready: false
+    restartCount: 13
+    state:
+      terminated:
+        containerID: docker://e73ad654ad797c9f4df4e75f515ed86ef119af8c95d402e285a3bd57e96f9ef9
+        exitCode: 1
+        finishedAt: "2019-01-24T14:33:32Z"
+        reason: OOMKilled
+        startedAt: "2019-01-24T14:33:32Z"
+  hostIP: 10.0.2.15
+  phase: Running
+  podIP: 172.17.0.7
+  qosClass: Burstable
+  startTime: "2019-01-24T02:36:41Z"
+
+```
+
+`kubectl describe pod memory-demo-2 --namespace=mem-example`
+
+``` shell
+Name:         memory-demo-2
+Namespace:    mem-example
+Node:         minikube/10.0.2.15
+Start Time:   Thu, 24 Jan 2019 08:36:41 +0600
+Labels:       <none>
+Annotations:  <none>
+Status:       Running
+IP:           172.17.0.7
+Containers:
+  memory-demo-2-ctr:
+    Container ID:  docker://6efba34fb4d01b169d0a61900f002dc1c1054155cea1b8564466e98a863be46b
+    Image:         polinux/stress
+    Image ID:      docker-pullable://polinux/stress@sha256:6d1825288ddb6b3cec8d3ac8a488c8ec2449334512ecb938483fc2b25cbbdb9a
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      stress
+    Args:
+      --vm
+      1
+      --vm-bytes
+      250M
+      --vm-hang
+      1
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       OOMKilled
+      Exit Code:    1
+      Started:      Thu, 24 Jan 2019 21:36:04 +0600
+      Finished:     Thu, 24 Jan 2019 21:36:04 +0600
+    Ready:          False
+    Restart Count:  27
+    Limits:
+      memory:  100Mi
+    Requests:
+      memory:     50Mi
+    Environment:  <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-9pcb2 (ro)
+Conditions:
+  Type           Status
+  Initialized    True 
+  Ready          False 
+  PodScheduled   True 
+Volumes:
+  default-token-9pcb2:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-9pcb2
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type     Reason   Age                   From               Message
+  ----     ------   ----                  ----               -------
+  Warning  BackOff  115s (x292 over 67m)  kubelet, minikube  Back-off restarting failed container
+
+```
