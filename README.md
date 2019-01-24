@@ -1,4 +1,5 @@
 # Kubernetes Primer
+
 1. Automatic Deployment
 2. Scaling
 3. Management of containerized applications
@@ -9,8 +10,9 @@
 7. In contrast, K8s is a set of independent, composable control processes that continuously drive the current state towards the provided desired state.
 
 ## Table of Contents
-- [Why](#Why)
-- [Concepts](#Concepts)
+
+- [Why](#why)
+- [Concepts](#conecpts)
 - [kubernetes Basics](#kubernetes-basics)
 - [Local Machine Solutions](#local-machine-solutions)
 - [K8s Tutorial](#k8s-tutorial)
@@ -29,6 +31,7 @@
   - [Assign memory reources to containers and pods](#assign-memory-reources-to-containers-and-pods)
 
 ## Why
+
 1. Service Discovery
    - kubernetes gives containers their own IP addresses and a single DNS name for a set of containers and can load-balance across them
 2. Automatic Binpacking
@@ -50,6 +53,7 @@
 8. horizontal scaling
 
 ## Concepts
+
 It orchestrates computing, networking, and storage infrastructure on behalf of user workloads
 
 - **Labels** - organize resources
@@ -58,23 +62,27 @@ It orchestrates computing, networking, and storage infrastructure on behalf of u
 - **Kubernetes Master** - three processes: kube-apiserver, kube-controller-manager, kube-scheduler
 - **Kubernetes Non-Master** - two proceses: kubelet, kube-proxy
 
-
 ### Required Fields for `.yaml` file
+
 1. `apiVersion`
 2. `kind`
 3. `metadata` - Data that helps uniquely identify the object, including a name string, UID, and optional namespace
 
 ### Names
+
 All objects in the Kubernetes REST API are unambiguously identified by a Name and a UID.
 
 ### Namespaces
+
 K8s supports multiple virtual clusters backed by the same physical cluster. These virtual clusters are called namespaces.
+
 ```shell
 kubectl get namespaces
 ```
 
-* Output:
-```
+Output:
+
+```shell
 NAME          STATUS   AGE
 ------------------------------
 default       Active   9m38s
@@ -91,10 +99,12 @@ $ kubectl api-resources --namespaced=false
 ```
 
 ### Labels and Selectors
-* **Labels** - Labels can be used to organize and to select subsets of objects.
+
+**Labels** - Labels can be used to organize and to select subsets of objects.
 Labels allow for efficient queries and watches and are ideal for use in UIs and CLIs. Non-identifying information should be recorded using annotations.
 
 ### Annotations
+
 You can use Kubernetes annotations to attach arbitrary non-identifying metadata to objects. Clients such as tools and libraries can retrieve this metadata.
 
 ```json
@@ -108,6 +118,7 @@ You can use Kubernetes annotations to attach arbitrary non-identifying metadata 
 ```
 
 ## Kubernetes Basics
+
 ``` bash
 minikube start
 minikube dashboard
@@ -160,7 +171,8 @@ minikube delete
 ```
 
 ## Local Machine Solutions
-* Minikube 
+
+* Minikube
   - single node kubernetes cluster
 * Minishift 
   - community version of kubernetes enterprise platform
@@ -173,28 +185,35 @@ minikube delete
 * Ubuntu on LXD supports a nine-instance deployment on localhost.
 
 ## K8s Tutorial
+
 ### Hello Minikube
+
 1. create a deployment that manages a pod. the pod runs a container based on the provided Docker image.
+
 ``` shell
 kubectl create deployment \
-	hello-node \ 
+	hello-node \
 	--image=gcr.io/hello-minikube-zero-install/hello-node
 ```
 
 2. view the deployment
+
 ``` shell
 kubectl get deployments
 ```
 
 3. view the pod
+
 ``` shell
 kubectl get pods
 ```
 
 4. view the `kubectl` configuration
+
 ``` shell
 kubectl config view
 ```
+
 Output:
 
 ``` yaml
@@ -220,17 +239,22 @@ users:
 ```
 
 5. Create a service
-By default, the Pod is only accessible by its internal IP address within the kubernetes cluster. To make the `hello-node` container accessible from outside the k8s virtual network, you have to expose the pod as kubernetes `Service`.
+    - By default, the Pod is only accessible by its internal IP address within the kubernetes cluster. To make the `hello-node` container accessible from outside the k8s virtual network, you have to expose the pod as kubernetes `Service`.
 
 6. Expose the pod to the public internet using the `kubectl expose` command:
+
 ``` shell
 kubectl expose deployment hello-node --type=LoadBalancer --port=8080
 ```
+
 7. view the services you just created:
+
 ``` shell
 kubectl get services
 ```
+
 Output:
+
 ``` shell
 NAME         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
 hello-node   LoadBalancer   10.105.34.93   <pending>     8080:30189/TCP   50s
@@ -238,75 +262,77 @@ kubernetes   ClusterIP      10.96.0.1      <none>        443/TCP          1d
 ```
 
 8. `minikube service hello-world`
-9. list the currently supported addons:
-`minikube addons list`
-Output:
+9. list the currently supported addons: `minikube addons list`
+    - Output:
 
-``` 
-minikube addons list 
-- addon-manager: enabled
-- coredns: enabled
-- dashboard: enabled
-- default-storageclass: enabled
-- efk: disabled
-- freshpod: disabled
-- heapster: disabled
-- ingress: disabled
-- kube-dns: disabled
-- metrics-server: disabled
-- nvidia-driver-installer: disabled
-- nvidia-gpu-device-plugin: disabled
-- registry: disabled
-- registry-creds: disabled
-- storage-provisioner: enabled
-```
+    ``` shell
+    minikube addons list 
+    - addon-manager: enabled
+    - coredns: enabled
+    - dashboard: enabled
+    - default-storageclass: enabled
+    - efk: disabled
+    - freshpod: disabled
+    - heapster: disabled
+    - ingress: disabled
+    - kube-dns: disabled
+    - metrics-server: disabled
+    - nvidia-driver-installer: disabled
+    - nvidia-gpu-device-plugin: disabled
+    - registry: disabled
+    - registry-creds: disabled
+    - storage-provisioner: enabled
+    ```
 
 10. to enable an addon: `minikube addons enable <addon_name>`
 11. to disable an addon: `minikube addons disable <addon_name>`
-12. view the pod and service you just created:
-`kubectl get pod, svc -n kube-system`
-Output:
+12. view the pod and service you just created: `kubectl get pod, svc -n kube-system`
+    Output:
 
-``` shell
-NAME                                        READY   STATUS    RESTARTS   AGE
-pod/coredns-c4cffd6dc-hnmks                 1/1     Running   1          1d
-pod/etcd-minikube                           1/1     Running   0          42m
-pod/kube-addon-manager-minikube             1/1     Running   1          1d
-pod/kube-apiserver-minikube                 1/1     Running   0          42m
-pod/kube-controller-manager-minikube        1/1     Running   0          42m
-pod/kube-dns-86f4d74b45-cr7p7               3/3     Running   5          1d
-pod/kube-proxy-ww2jz                        1/1     Running   0          41m
-pod/kube-scheduler-minikube                 1/1     Running   1          1d
-pod/kubernetes-dashboard-6f4cfc5d87-cmq24   1/1     Running   3          1d
-pod/storage-provisioner                     1/1     Running   2          1d
+    ``` shell
+    NAME                                        READY   STATUS    RESTARTS   AGE
+    pod/coredns-c4cffd6dc-hnmks                 1/1     Running   1          1d
+    pod/etcd-minikube                           1/1     Running   0          42m
+    pod/kube-addon-manager-minikube             1/1     Running   1          1d
+    pod/kube-apiserver-minikube                 1/1     Running   0          42m
+    pod/kube-controller-manager-minikube        1/1     Running   0          42m
+    pod/kube-dns-86f4d74b45-cr7p7               3/3     Running   5          1d
+    pod/kube-proxy-ww2jz                        1/1     Running   0          41m
+    pod/kube-scheduler-minikube                 1/1     Running   1          1d
+    pod/kubernetes-dashboard-6f4cfc5d87-cmq24   1/1     Running   3          1d
+    pod/storage-provisioner                     1/1     Running   2          1d
 
-NAME                           TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)         AGE
-service/kube-dns               ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP   1d
-service/kubernetes-dashboard   ClusterIP   10.108.163.109   <none>        80/TCP          1d
-```
+    NAME                           TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)         AGE
+    service/kube-dns               ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP   1d
+    service/kubernetes-dashboard   ClusterIP   10.108.163.109   <none>        80/TCP          1d
+    ```
 13. clean up
+
 ``` shell
 kubectl delete service hello-node
 kubectl delete deployment hello-node
 ```
 
 14. stop the minikube VM
+
 ``` shell
 minikube stop
 ```
 
 15. Optionally delete the Minikube VM:
+
 ``` shell
 minikube delete
 ```
 
-
 ### Deploying an Application
+
 ``` shell
 kubectl run kubernete-bootcamp \
 	--image=gcr.io/google-samples/kubernetes-bootcamp:v1 \
 	--port=8080
 ```
+
 1. searches for a suitable node where an instance of the application could be run.
 2. scheduled the application to run on that Node
 3. configured the cluster to reschedule the instance on a new Node when needed.
@@ -324,6 +350,7 @@ kubectl proxy
 ```
 
 ### Viewing Pods and Nodes
+
 The containers in a Pod share -
 1. an IP Address
 2. an Port Space
@@ -733,7 +760,7 @@ spec:
 ```
 
 ``` shell
-kubectl create -f k8s-tasks/pods/resource/memory-request-limit.yaml \
+kubectl create -f k8s-website/tasks/pods/resource/memory-request-limit.yaml \
 	--namespace=mem-example
 ```
 
@@ -800,7 +827,7 @@ In the args section of the configuration file, you can see that the Container wi
 Create the Pod
 
 ``` shell
-kubectl create -f k8s-tasks/pods/resource/memory-request-limit2.yaml \
+kubectl create -f k8s-website/tasks/pods/resource/memory-request-limit2.yaml \
 	--namespace=mem-example
 ```
 
