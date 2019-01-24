@@ -25,6 +25,8 @@
   - [Getting Started with Kubeadm](#getting-started-with-kubeadm)
   - [Deploy Containers using YAML](#deploy-containers-using-yaml)
   - [Configuing Redis using a ConfigMap](#configuring-redis-using-a-configmap)
+- [K8s Tasks](#k8s-tasks)
+  - [Assign memory reources to containers and pods](#assign-memory-reources-to-containers-and-pods)
 
 ## Why
 1. Service Discovery
@@ -684,3 +686,122 @@ spec:
 
 ### Configuring Redis using a ConfigMap
 [Contd.]
+
+
+## K8s Tasks
+### Assign memory reources to containers and pods
+
+``` shell
+# check the version
+kubectl version
+
+# each node in your cluster must have at least 300MB of memory
+
+# if minikube then run the following command to enable the metrics-server
+minikube addons enable metric-server
+
+# to see whether the metrics-server is running, or another
+kubectl get apiservices
+```
+
+* Create a namespace
+Create a namespace so that the resources you create in this exercise are isolated from the rest of your cluster.
+``` shell
+kubectl create namespace mem-example
+```
+
+* Specify a memory request and a memory limit
+
+``` yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-demo
+  namespace: mem-example
+spec:
+  containers:
+  - name: memory-demo-ctr
+    image: polinux/stress
+    resources:
+      limits:
+        memory: "200Mi"
+      requests:
+        memory: "100Mi"
+    command: ["stress"]
+    args: ["--vm", "1", "--vm-bytes", "150M", "--vm-hang", "1"]
+
+```
+
+``` shell
+kubectl create -f k8s-tasks/pods/resource/memory-request-limit.yaml \
+	--namespace=mem-example
+```
+
+Verify the pod container is running:
+
+``` shell
+kubectl get pod memory-demo --namespace=mem-example
+```
+
+View detailed information about the Pod:
+
+``` shell
+kubectl get pod memory-demo \
+	--output=yaml --namespace=mem-example
+```
+
+Run `kubectl top` to fetch the metrics for the pod:
+``` shell
+kubectl top pod memory-demo --namespace=mem-example
+```
+
+Output:
+
+``` shell
+NAME          CPU(cores)   MEMORY(bytes)   
+memory-demo   66m          150Mi 
+```
+
+Delete Your Pod
+
+``` shell
+kubectl delete pod memory-demo --namespace=mem-example
+```
+
+* **Exceed a container's memory limit**
+1. If a Container allocates more memory than its limit, the Container becomes a candidate for termination. 
+2. If the Container continues to consume memory beyond its limit, the Container is terminated. 
+3. If a terminated Container can be restarted, the kubelet restarts it, as with any other type of runtime failure.
+
+``` yaml
+# pods/resource/memory-request-limit-2.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-demo-2
+  namespace: mem-example
+spec:
+  containers:
+  - name: memory-demo-2-ctr
+    image: polinux/stress
+    resources:
+      requests:
+        memory: "50Mi"
+      limits:
+        memory: "100Mi"
+    command: ["stress"]
+    args: ["--vm", "1", "--vm-bytes", "250M", "--vm-hang", "1"]
+
+```
+
+In the args section of the configuration file, you can see that the Container will attempt to allocate 250 MiB of memory, which is well above the 100 MiB limit.
+
+Create the Pod
+
+``` shell
+kubectl create -f k8s-tasks/pods/resource/memory-request-limit2.yaml \
+	--namespace=mem-example
+```
+
+
