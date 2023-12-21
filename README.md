@@ -1,56 +1,41 @@
 # Kubernetes Primer
 
-1. Automatic Deployment
-2. Scaling
-3. Management of containerized applications
-4. Groups containers that make up an application into logical units for easy management and discovery.
-5. K8s is not a mere orchestration system, it eliminates the need for orchestration. 
-6. The technical definition of orchestration is execution of a defined workflow. 
-   - First Do A -> then B -> then C.
-7. In contrast, K8s is a set of independent, composable control processes that continuously drive the current state towards the provided desired state.
+This document provides an introduction to Kubernetes and its key features. It covers various use cases and concepts related to Kubernetes.
 
 ## Table of Contents
 
-- [Why](#why)
-- [Concepts](#conecpts)
-- [kubernetes Basics](#kubernetes-basics)
-- [Local Machine Solutions](#local-machine-solutions)
-- [K8s Tutorial](#k8s-tutorial)
-  - [Hello Minikube](#hello-minikube)
-  - [Deploying an Application](#deploying-an-application)
-  - [Viewing Pods and Nodes](#viewing-pods-and-nodes)
-  - [Exploring your application](#exploring-your-application)
-  - [Service to expose your app](#service-to-expose-your-app)
-  - [Performing a rolling update](#performing-a-rolling-update)
-  - [Creating a custom cluster from scratch](#creating-a-custom-cluster-from-scratch)
-  - [Launch a single node k8s cluster](#launch-a-single-node-k8s-cluster)
-  - [Getting Started with Kubeadm](#getting-started-with-kubeadm)
-  - [Deploy Containers using YAML](#deploy-containers-using-yaml)
-  - [Configuing Redis using a ConfigMap](#configuring-redis-using-a-configmap)
-- [K8s Tasks](#k8s-tasks)
-  - [Assign memory reources to containers and pods](#assign-memory-reources-to-containers-and-pods)
+- [Concepts](#concepts): Provides an overview of the fundamental concepts in Kubernetes.
+- [Kubernetes Basics](#kubernetes-basics): Covers the basic operations and functionalities of Kubernetes.
+- [Local Machine Solutions](#local-machine-solutions): Discusses different solutions for running Kubernetes on a local machine.
+- [K8s Tutorial](#k8s-tutorial): Provides a step-by-step tutorial for working with Kubernetes.
+  - [Hello Minikube](#hello-minikube): Demonstrates how to set up and run a basic application using Minikube.
+  - [Deploying an Application](#deploying-an-application): Shows how to deploy an application on a Kubernetes cluster.
+  - [Viewing Pods and Nodes](#viewing-pods-and-nodes): Explains how to view and manage pods and nodes in Kubernetes.
+  - [Exploring your application](#exploring-your-application): Guides you on how to explore and interact with your deployed application.
+  - [Service to expose your app](#service-to-expose-your-app): Demonstrates how to expose your application using a Kubernetes service.
+  - [Performing a rolling update](#performing-a-rolling-update): Shows how to perform a rolling update of your application.
+  - [Creating a custom cluster from scratch](#creating-a-custom-cluster-from-scratch): Explains how to create a custom Kubernetes cluster.
+  - [Launch a single node k8s cluster](#launch-a-single-node-k8s-cluster): Guides you on launching a single-node Kubernetes cluster.
+  - [Getting Started with Kubeadm](#getting-started-with-kubeadm): Provides an introduction to using Kubeadm for Kubernetes cluster setup.
+  - [Deploy Containers using YAML](#deploy-containers-using-yaml): Shows how to deploy containers using YAML configuration files.
+  - [Configuring Redis using a ConfigMap](#configuring-redis-using-a-configmap): Explains how to configure Redis using a ConfigMap in Kubernetes.
+- [K8s Tasks](#k8s-tasks): Covers various tasks and operations in Kubernetes.
+  - [Assign memory resources to containers and pods](#assign-memory-resources-to-containers-and-pods): Demonstrates how to assign memory resources to containers and pods in Kubernetes.
 
-## Why
+The document also provides an overview of the key features and benefits of using Kubernetes, including:
 
-1. Service Discovery
-   - kubernetes gives containers their own IP addresses and a single DNS name for a set of containers and can load-balance across them
-2. Automatic Binpacking
-   - automatically places containers based on their resource requirements and other containers, while not sacrificing availability.
-3. Storage Orchestration
-   - local storage / cloud (GCP/AWS) / network storage such as NFS, iSCSI, Gluster, Ceph, Cinder, Flocker
-4. Self-healing
-   - restarts containers that fail
-   - replaces and reschedules containers when nodes die,
-   - kills containers that dont respond to your user-defined health check, and doesn't advertise them until they are ready to serve.
-5. Automated rollouts and rollbacks
-   - progressively rolls out changes to your application, or configuration, while monitoring application health.
-   - all instances are not kill at same time.
-   - if something goes wrong, kubernetes will rollback the change for you.
-6. secret and configuration management 
-   - deploy and update secrets and application configuration
-   - w/o rebuilding your image and w/o exposing secrets in your stack configuration
-7. batch execution - batch and CI workloads, replacing containers that fail, if desired.
-8. horizontal scaling
+1. Automatic Deployment: Kubernetes automates the deployment of containerized applications.
+2. Scaling: Kubernetes provides built-in scaling capabilities for managing application workloads.
+3. Management of containerized applications: Kubernetes groups containers that make up an application into logical units for easy management and discovery.
+4. Service Discovery: Kubernetes gives containers their own IP addresses and a single DNS name for a set of containers, enabling load balancing across them.
+5. Storage Orchestration: Kubernetes supports various storage options, including local storage, cloud storage, and network storage.
+6. Self-healing: Kubernetes automatically restarts containers that fail, replaces and reschedules containers when nodes die, and kills unresponsive containers.
+7. Automated rollouts and rollbacks: Kubernetes allows for progressive rollouts and rollbacks of application changes, ensuring application health and availability.
+8. Secret and Configuration Management: Kubernetes enables the deployment and update of secrets and application configuration without rebuilding the image or exposing secrets in the stack configuration.
+9. Batch Execution: Kubernetes supports batch and CI workloads, replacing failed containers as needed.
+10. Horizontal Scaling: Kubernetes provides horizontal scaling capabilities for scaling applications based on resource requirements.
+
+Please refer to the specific sections in the document for detailed explanations and examples of each use case.
 
 ## Concepts
 
@@ -119,7 +104,7 @@ You can use Kubernetes annotations to attach arbitrary non-identifying metadata 
 
 ## Kubernetes Basics
 
-``` bash
+```bash
 minikube start
 minikube dashboard
 kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
@@ -148,7 +133,7 @@ kubectl get pod,svc -n kube-system
 # pod/kube-scheduler-minikube                 1/1     Running             0          2h
 # pod/kubernetes-dashboard-6f4cfc5d87-ljdqg   1/1     Running             5          34d
 # pod/storage-provisioner                     1/1     Running             5          34d
-# 
+#
 # NAME                           TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
 # service/heapster               ClusterIP   10.104.225.26    <none>        80/TCP              3s
 # service/kube-dns               ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP       34d
@@ -159,30 +144,30 @@ kubectl get pod,svc -n kube-system
 minikube addons disable heapster
 ```
 
-``` bash
+```bash
 # Clean up
 kubectl delete service hello-node
 kubectl delete deployment hello-node
 ```
 
-``` bash
+```bash
 minikube stop
 minikube delete
 ```
 
 ## Local Machine Solutions
 
-* Minikube
+- Minikube
   - single node kubernetes cluster
-* Minishift 
+- Minishift
   - community version of kubernetes enterprise platform
   - Openshift for local development & testing.
-* microk8s
+- microk8s
   - single command installation of latest kubernetes release.
-* IBM Cloud Private-CE or IBM Cloud Private-CE on Linux Containers
-* kubadm-dind
+- IBM Cloud Private-CE or IBM Cloud Private-CE on Linux Containers
+- kubadm-dind
   - multinode (while minikube is single-node) kubernetes cluster. only requires a docker daemon. docker-in-docker to spawn the kubernetes cluster.
-* Ubuntu on LXD supports a nine-instance deployment on localhost.
+- Ubuntu on LXD supports a nine-instance deployment on localhost.
 
 ## K8s Tutorial
 
@@ -190,7 +175,7 @@ minikube delete
 
 1. create a deployment that manages a pod. the pod runs a container based on the provided Docker image.
 
-``` shell
+```shell
 kubectl create deployment \
 	hello-node \
 	--image=gcr.io/hello-minikube-zero-install/hello-node
@@ -198,64 +183,65 @@ kubectl create deployment \
 
 2. view the deployment
 
-``` shell
+```shell
 kubectl get deployments
 ```
 
 3. view the pod
 
-``` shell
+```shell
 kubectl get pods
 ```
 
 4. view the `kubectl` configuration
 
-``` shell
+```shell
 kubectl config view
 ```
 
 Output:
 
-``` yaml
+```yaml
 apiVersion: v1
 clusters:
-- cluster:
-    certificate-authority: /home/alamin/.minikube/ca.crt
-    server: https://192.168.99.100:8443
-  name: minikube
+  - cluster:
+      certificate-authority: /home/alamin/.minikube/ca.crt
+      server: https://192.168.99.100:8443
+    name: minikube
 contexts:
-- context:
-    cluster: minikube
-    user: minikube
-  name: minikube
+  - context:
+      cluster: minikube
+      user: minikube
+    name: minikube
 current-context: minikube
 kind: Config
 preferences: {}
 users:
-- name: minikube
-  user:
-    client-certificate: /home/alamin/.minikube/client.crt
-    client-key: /home/alamin/.minikube/client.key
+  - name: minikube
+    user:
+      client-certificate: /home/alamin/.minikube/client.crt
+      client-key: /home/alamin/.minikube/client.key
 ```
 
 5. Create a service
-    - By default, the Pod is only accessible by its internal IP address within the kubernetes cluster. To make the `hello-node` container accessible from outside the k8s virtual network, you have to expose the pod as kubernetes `Service`.
+
+   - By default, the Pod is only accessible by its internal IP address within the kubernetes cluster. To make the `hello-node` container accessible from outside the k8s virtual network, you have to expose the pod as kubernetes `Service`.
 
 6. Expose the pod to the public internet using the `kubectl expose` command:
 
-``` shell
+```shell
 kubectl expose deployment hello-node --type=LoadBalancer --port=8080
 ```
 
 7. view the services you just created:
 
-``` shell
+```shell
 kubectl get services
 ```
 
 Output:
 
-``` shell
+```shell
 NAME         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
 hello-node   LoadBalancer   10.105.34.93   <pending>     8080:30189/TCP   50s
 kubernetes   ClusterIP      10.96.0.1      <none>        443/TCP          1d
@@ -263,33 +249,34 @@ kubernetes   ClusterIP      10.96.0.1      <none>        443/TCP          1d
 
 8. `minikube service hello-world`
 9. list the currently supported addons: `minikube addons list`
-    - Output:
 
-    ``` shell
-    minikube addons list 
-    - addon-manager: enabled
-    - coredns: enabled
-    - dashboard: enabled
-    - default-storageclass: enabled
-    - efk: disabled
-    - freshpod: disabled
-    - heapster: disabled
-    - ingress: disabled
-    - kube-dns: disabled
-    - metrics-server: disabled
-    - nvidia-driver-installer: disabled
-    - nvidia-gpu-device-plugin: disabled
-    - registry: disabled
-    - registry-creds: disabled
-    - storage-provisioner: enabled
-    ```
+   - Output:
+
+   ```shell
+   minikube addons list
+   - addon-manager: enabled
+   - coredns: enabled
+   - dashboard: enabled
+   - default-storageclass: enabled
+   - efk: disabled
+   - freshpod: disabled
+   - heapster: disabled
+   - ingress: disabled
+   - kube-dns: disabled
+   - metrics-server: disabled
+   - nvidia-driver-installer: disabled
+   - nvidia-gpu-device-plugin: disabled
+   - registry: disabled
+   - registry-creds: disabled
+   - storage-provisioner: enabled
+   ```
 
 10. to enable an addon: `minikube addons enable <addon_name>`
 11. to disable an addon: `minikube addons disable <addon_name>`
 12. view the pod and service you just created: `kubectl get pod, svc -n kube-system`
     Output:
 
-    ``` shell
+    ```shell
     NAME                                        READY   STATUS    RESTARTS   AGE
     pod/coredns-c4cffd6dc-hnmks                 1/1     Running   1          1d
     pod/etcd-minikube                           1/1     Running   0          42m
@@ -306,28 +293,29 @@ kubernetes   ClusterIP      10.96.0.1      <none>        443/TCP          1d
     service/kube-dns               ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP   1d
     service/kubernetes-dashboard   ClusterIP   10.108.163.109   <none>        80/TCP          1d
     ```
+
 13. clean up
 
-``` shell
+```shell
 kubectl delete service hello-node
 kubectl delete deployment hello-node
 ```
 
 14. stop the minikube VM
 
-``` shell
+```shell
 minikube stop
 ```
 
 15. Optionally delete the Minikube VM:
 
-``` shell
+```shell
 minikube delete
 ```
 
 ### Deploying an Application
 
-``` shell
+```shell
 kubectl run kubernete-bootcamp \
 	--image=gcr.io/google-samples/kubernetes-bootcamp:v1 \
 	--port=8080
@@ -337,7 +325,7 @@ kubectl run kubernete-bootcamp \
 2. scheduled the application to run on that Node
 3. configured the cluster to reschedule the instance on a new Node when needed.
 
-``` shell
+```shell
 kubectl get deployments
 ```
 
@@ -345,32 +333,36 @@ Pods that are running inside k8s are running on a private, isolated network. By 
 
 The kubectl command can create a proxy that will forward communications into the cluster-wide, private network.
 
-``` shell
+```shell
 kubectl proxy
 ```
 
 ### Viewing Pods and Nodes
 
 The containers in a Pod share -
+
 1. an IP Address
 2. an Port Space
 3. always co-located and co-scheduled.
 4. and run in a shared context on the same node.
 
 Every k8s node runs at least -
+
 1. `kubelet` a process responsible for communication between the k8s master and the node. it manages pods and containers of that node.
 2. A container RT like (docker, rkt) responsible for pulling the container image from a registry, unpacking the container and running the application.
 
 #### Troubleshooting with `kubectl`
+
 1. `kubectl get` - list resources
 2. `kubelet describe` - show detailed information about a resource.
 3. `kubectl logs` - print the logs from a container in a pod.
 4. `kubectl exec` - execute a command on a container in a pod.
 
 ### Exploring your application
+
 1. get pod name
 
-``` shell
+```shell
 export POD_NAME=$(kubectl get pods -o go-template --template \
 	'{{range .items}} \
 		{{.metadata.name}} \
@@ -381,46 +373,55 @@ echo Name of the POD: -> $POD_NAME
 ```
 
 2. output of our application run a curl
-``` shell
+
+```shell
 curl http://localhost:8001/api/v1/namespaces/default/pods/$POD_NAME/proxy/
 ```
+
 The url is the route to the API of the Pod.
 
 3. View the container logs
-``` shell
+
+```shell
 kubectl logs $POD_NAME
 ```
 
 4. execute a command inside a pod's container
-``` shell
+
+```shell
 kubectl exec $POD_NAME env
 ```
+
 Since we have only single container inside that pod, so mentioning the name won't be necessary.
 
 5. start a bash session in a pod's container
-``` shell
+
+```shell
 kubectl exec -ti $POD_NAME bash
 ```
 
 ### Service to expose your app
+
 A ReplicaSet might then dynamically drive the cluster back to desired state via creation of new Pods to keep your application running.
 
-A Service in Kubernetes is an abstraction which defines a logical set of Pods and a policy by which to access them. 
+A Service in Kubernetes is an abstraction which defines a logical set of Pods and a policy by which to access them.
 
 The set of pods targeted by a service is usually determined by a LabelSelector.
 
 Service can be exposed by specifying a `type` in the ServiceSpec.
+
 - ClusterIP (default)
-   - Exposes the Service on an internal IP in the cluster. This type makes the Service only reachable from within the cluster.
+  - Exposes the Service on an internal IP in the cluster. This type makes the Service only reachable from within the cluster.
 - NodePort
   - Exposes the Service on the same port of each selected Node in the cluster using NAT. Makes a Service accessible from outside the cluster using <NodeIP>:<NodePort>. Superset of ClusterIP.
 - LoadBalancer
-  - Creates an external  load balancer in the current cloud (if supported) and assigns a fixed, external IP to the Service. Superset of NodePort
+  - Creates an external load balancer in the current cloud (if supported) and assigns a fixed, external IP to the Service. Superset of NodePort
 - ExternalName
   - Exposes the Service using an arbitrary name (specified by externalName in the spec) by returning a CNAME record with the name. No proxy is used.
 
 #### Exposing your app commands
-``` shell
+
+```shell
 kubectl get pods -l run=kubernetes-bootcamp
 kubectl get services -l run=kubernetes-bootcamp
 export POD_NAME=$(kubectl get pods -o go-template --template \
@@ -443,36 +444,46 @@ kubectl exec -it $POD_NAME curl localhost:8080
 ```
 
 ### Performing a Rolling Update
+
 1. Perform a rolling update using `kubectl`.
 2. Users expect applications to be available all the time and developers are expected to deploy new versions of them several times a day.
-3. In Kubernetes this is done with rolling updates. 
+3. In Kubernetes this is done with rolling updates.
 4. Rolling updates allow Deployments' update to take place with zero downtime by incrementally updating Pods instances with new ones.
 5. The new Pods will be scheduled on Nodes with available resources.
 6. get deployments
-``` shell
+
+```shell
 kubectl get deployments
 ```
+
 7. To list the running pods use the `get pods` command:
-``` shell
+
+```shell
 kubectl get pods
 ```
+
 8. to view the current image version of the app: run a `describe` command.
-``` shell
+
+```shell
 kubectl describe pods
 ```
+
 9. Use the `set image` command followed by the deployment name and the new image version:
-``` shell
+
+```shell
 kubectl set image deployments/kubernetes-bootcamp \
 	kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v2
 ```
+
 10. Check the status of the old pod terminating and new pod creating
 
-``` shell
+```shell
 kubectl get pods
 ```
+
 Output:
 
-``` shell
+```shell
 NAME                                   READY     STATUS        RESTARTS   AGE
 kubernetes-bootcamp-5c69669756-4h999   1/1       Terminating   0          9m
 kubernetes-bootcamp-5c69669756-jksvb   1/1       Terminating   0          9m
@@ -483,65 +494,82 @@ kubernetes-bootcamp-7799cbcb86-9t6sg   1/1       Running       0          18s
 kubernetes-bootcamp-7799cbcb86-fwmlv   1/1       Running       0          16s
 kubernetes-bootcamp-7799cbcb86-jg98m   1/1       Running       0          16s
 ```
-11. Let's check the app is running. to get the describe 
-``` shell
+
+11. Let's check the app is running. to get the describe
+
+```shell
 kubectl describe services/kubernetes-bootcamp
 ```
+
 12. create an environment variable called `NODE_PORT` that has the value of the Node Port assigned.
-``` shell
+
+```shell
 export NODE_PORT=$(
 	kubectl get services/kubernetes-bootcamp \
 	-o go-template='{{(index .spec.ports 0).nodePort}}'
 )
 echo NODE_PORT=$NODE_PORT
 ```
+
 13. curl to the exposed ip and port
-``` shell
+
+```shell
 curl $(minikube ip):$NODE_PORT
 ```
+
 14. the update can be confirmed by running a roll-out status
-``` shell
+
+```shell
 kubectl rollout status deployments/kubernetes-bootcamp
 ```
+
 15. rollback to previous state
-``` shell
+
+```shell
 kubectl rollout undo deployments/kubernetes-bootcamp
 ```
+
 The rollout command reverted the deployment to the previous known state (v2 of the image). Updates are versioned and you can revert to any previously know state of a Deployment
 
 ### Creating a custom cluster from scratch
+
 #### Designing and Preparing
-* Cloud Provider
-  * provides an interface for managing TCP Load Balancers, Nodes(instances) and Networking Routes
-  * **TCP Load Balancer** - verifies information sent to IP addresses. ensures the data arrives error-free to non-HTTP applications.
-* Nodes
-  * **x86_64 architecture** - 
-* Network
-  * container to container - solved by pods
-  * pod to pod
-  * pod to service - services
-  * external to service - services
-* Docker Model
-* Kubernetes Model
-  * all containers can communicate with all other containers w/o NAT
-  * all nodes can communicate with all containers (and vice-versa) w/o NAT
-  * the IP that a container sees itself as is the same IP that others see it as.
-  * In previous, your VM had an IP and could talk to other VMs in your project. 
+
+- Cloud Provider
+  - provides an interface for managing TCP Load Balancers, Nodes(instances) and Networking Routes
+  - **TCP Load Balancer** - verifies information sent to IP addresses. ensures the data arrives error-free to non-HTTP applications.
+- Nodes
+  - **x86_64 architecture** -
+- Network
+  - container to container - solved by pods
+  - pod to pod
+  - pod to service - services
+  - external to service - services
+- Docker Model
+- Kubernetes Model
+  - all containers can communicate with all other containers w/o NAT
+  - all nodes can communicate with all containers (and vice-versa) w/o NAT
+  - the IP that a container sees itself as is the same IP that others see it as.
+  - In previous, your VM had an IP and could talk to other VMs in your project.
+
 #### Network
-* Network connectivity
+
+- Network connectivity
   - Kubernetes allocates an IP address to each pod.
   - a block of IPs for kubernetes to use as Pod IPs.
   - allocate a different block of IPs to each node in the cluster as the node is added.
   - a process of one pod should be able to communicate with another pod using the IP of the second pod.
-	- overlay network
-		- traffic encapsulation (vxlan)
-		- might have performance issue
-	- w/o overlay
-		- configure the underlying network fabric(switches, routers) to be aware of pod IP addresses.
-		- comparatively performant
-	- network plugin called by k8s
-		- CNI Plugin interface
+  - overlay network
+    - traffic encapsulation (vxlan)
+    - might have performance issue
+  - w/o overlay
+    - configure the underlying network fabric(switches, routers) to be aware of pod IP addresses.
+    - comparatively performant
+  - network plugin called by k8s
+    - CNI Plugin interface
+
 #### Components
+
 1. etcd - inside docker as a docker container
 2. docker - outside of docker container as system daemon
 3. Kubernetes
@@ -550,7 +578,9 @@ The rollout command reverted the deployment to the previous known state (v2 of t
    - kube-apiserver - inside docker as a docker container
    - kube-controller-manager - inside docker as a docker container
    - kube-scheduler - inside docker as a docker container
+
 #### Security Models
+
 1. Access the APIServer using http
    - firewall/security
    - easier
@@ -560,15 +590,16 @@ The rollout command reverted the deployment to the previous known state (v2 of t
    - configure certs can be tricky
 
 ### Launch a single node k8s cluster
+
 Minikube - single node k8s cluster inside a vm on your laptop
 
-``` bash
+```bash
 minikube version
 minikube start
 
 # minikube started a VM, kube cluster is running in that VM
 # ----------------------------------------------------------
-# starting kube cluster 
+# starting kube cluster
 # starting VM
 # getting VM IP address
 # moving files to cluster
@@ -579,8 +610,9 @@ minikube start
 # kubectl is now configured to use the cluster
 # loading cached images from the config file
 ```
-* Cluster Info
-  - Details of the cluster and health status can be discovered via 
+
+- Cluster Info
+  - Details of the cluster and health status can be discovered via
 
 ```bash
 kubectl cluster-info
@@ -590,29 +622,31 @@ kubectl cluster-info
 # CoreDNS is running at https://192.168.99.100:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 ```
 
-``` bash
+```bash
 kubectl get nodes
 ```
 
-``` bash
+```bash
 kubectl run first-deployment --image=katacoda/docker-http-server --port=80
 ```
 
-``` bash
+```bash
 kubectl get pods
 ```
 
-``` bash
+```bash
 export PORT=$(kubectl get svc first-deployment -o go-template='{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}')
 echo "Accessing host01:$PORT"
 curl host01:$PORT
 ```
 
 ### Getting Started with Kubeadm
+
 #### Initialize Master
+
 The first stage of initialising the cluster is to launch the master node. The master is responsible for running the control plane components, etcd and the API server. Clients will communicate to the API to schedule workloads and manage the state of the cluster.
 
-``` bash
+```bash
 kubeadm init --token=102952.1a7dd4cc8d1f4cc5 --kubernetes-version $(kubeadm version -o short)
 
 sudo cp /etc/kubernetes/admin.conf $HOME/
@@ -623,13 +657,13 @@ export KUBECONFIG=$HOME/admin.conf
 
 #### Join Cluster
 
-``` shell
+```shell
 kubeadm token list
 ```
 
 On the Second Node
 
-``` shell
+```shell
 kubeadm join --discovery-token-unsafe-skip-ca-verification --token=102952.1a7dd4cc8d1f4cc5 172.17.0.20:6443
 ```
 
@@ -637,18 +671,19 @@ kubeadm join --discovery-token-unsafe-skip-ca-verification --token=102952.1a7dd4
 
 #### View Nodes
 
-``` shell
+```shell
 kubectl get nodes
 ```
 
 The Nodes are not ready, cause CNI has not been deployed.
 
 #### Deploy CNI
-The Container Network Interface (CNI) defines how the different nodes and their workloads should communicate. 
 
-* On Master
+The Container Network Interface (CNI) defines how the different nodes and their workloads should communicate.
 
-``` shell
+- On Master
+
+```shell
 cat /opt/weave-kube
 kubectl apply -f /opt/weave-kube // master
 kubectl get pod -n kube-system // master
@@ -659,66 +694,72 @@ docker ps | grep docker-http-server // 2nd node
 ```
 
 ### Deploy Containers using YAML
-* Deployment file
-``` yaml
+
+- Deployment file
+
+```yaml
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-    name: webapp1
+  name: webapp1
 spec:
-    replicas: 1
-    template:
-        metadata:
-            labels:
-                app: webapp1
-        spec:
-            containers:
-            - name: webapp1
-              image: katacoda/docker-http-server:latest
-              ports:
-              - containerPort: 80
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: webapp1
+    spec:
+      containers:
+        - name: webapp1
+          image: katacoda/docker-http-server:latest
+          ports:
+            - containerPort: 80
 ```
 
-* `kubectl create -f deployment.yaml`
-* `kubectl get deployment`
-* `kubectl describe deployment webapp1`
-* Service
+- `kubectl create -f deployment.yaml`
+- `kubectl get deployment`
+- `kubectl describe deployment webapp1`
+- Service
   - The Service selects all applications with the label webapp1. As multiple replicas, or instances, are deployed, they will be automatically load balanced based on this common label. The Service makes the application available via a NodePort.
 
-``` yaml
+```yaml
 # This is your Editor pane.
 apiVersion: v1
 kind: Service
 metadata:
-    name: webapp1-svc
-    labels:
-        app: webapp1
+  name: webapp1-svc
+  labels:
+    app: webapp1
 spec:
-    type: NodePort
-    ports:
+  type: NodePort
+  ports:
     - port: 80
       nodePort: 30080
-    selector:
-        app: webapp1
+  selector:
+    app: webapp1
 ```
-* `kubectl create -f service.yaml`
-* `kubectl get svc`
-* `kubectl describe svc webapp1-svc`
-* `curl host01:30080`
+
+- `kubectl create -f service.yaml`
+- `kubectl get svc`
+- `kubectl describe svc webapp1-svc`
+- `curl host01:30080`
+
 #### Scale Deployment
-* `kubectl apply -f deployment.yaml`
-* `kubectl get deployment`
-* `kubectl get pods`
-* `curl host01:30080`
+
+- `kubectl apply -f deployment.yaml`
+- `kubectl get deployment`
+- `kubectl get pods`
+- `curl host01:30080`
 
 ### Configuring Redis using a ConfigMap
+
 [Contd.]
 
-
 ## K8s Tasks
+
 ### Assign memory reources to containers and pods
 
-``` shell
+```shell
 # check the version
 kubectl version
 
@@ -731,15 +772,16 @@ minikube addons enable metric-server
 kubectl get apiservices
 ```
 
-* Create a namespace
-Create a namespace so that the resources you create in this exercise are isolated from the rest of your cluster.
-``` shell
+- Create a namespace
+  Create a namespace so that the resources you create in this exercise are isolated from the rest of your cluster.
+
+```shell
 kubectl create namespace mem-example
 ```
 
-* Specify a memory request and a memory limit
+- Specify a memory request and a memory limit
 
-``` yaml
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -747,60 +789,61 @@ metadata:
   namespace: mem-example
 spec:
   containers:
-  - name: memory-demo-ctr
-    image: polinux/stress
-    resources:
-      limits:
-        memory: "200Mi"
-      requests:
-        memory: "100Mi"
-    command: ["stress"]
-    args: ["--vm", "1", "--vm-bytes", "150M", "--vm-hang", "1"]
-
+    - name: memory-demo-ctr
+      image: polinux/stress
+      resources:
+        limits:
+          memory: "200Mi"
+        requests:
+          memory: "100Mi"
+      command: ["stress"]
+      args: ["--vm", "1", "--vm-bytes", "150M", "--vm-hang", "1"]
 ```
 
-``` shell
+```shell
 kubectl create -f k8s-website/tasks/pods/resource/memory-request-limit.yaml \
 	--namespace=mem-example
 ```
 
 Verify the pod container is running:
 
-``` shell
+```shell
 kubectl get pod memory-demo --namespace=mem-example
 ```
 
 View detailed information about the Pod:
 
-``` shell
+```shell
 kubectl get pod memory-demo \
 	--output=yaml --namespace=mem-example
 ```
 
 Run `kubectl top` to fetch the metrics for the pod:
-``` shell
+
+```shell
 kubectl top pod memory-demo --namespace=mem-example
 ```
 
 Output:
 
-``` shell
-NAME          CPU(cores)   MEMORY(bytes)   
-memory-demo   66m          150Mi 
+```shell
+NAME          CPU(cores)   MEMORY(bytes)
+memory-demo   66m          150Mi
 ```
 
 Delete Your Pod
 
-``` shell
+```shell
 kubectl delete pod memory-demo --namespace=mem-example
 ```
 
-* **Exceed a container's memory limit**
-1. If a Container allocates more memory than its limit, the Container becomes a candidate for termination. 
-2. If the Container continues to consume memory beyond its limit, the Container is terminated. 
+- **Exceed a container's memory limit**
+
+1. If a Container allocates more memory than its limit, the Container becomes a candidate for termination.
+2. If the Container continues to consume memory beyond its limit, the Container is terminated.
 3. If a terminated Container can be restarted, the kubelet restarts it, as with any other type of runtime failure.
 
-``` yaml
+```yaml
 # pods/resource/memory-request-limit-2.yaml
 
 apiVersion: v1
@@ -810,37 +853,36 @@ metadata:
   namespace: mem-example
 spec:
   containers:
-  - name: memory-demo-2-ctr
-    image: polinux/stress
-    resources:
-      requests:
-        memory: "50Mi"
-      limits:
-        memory: "100Mi"
-    command: ["stress"]
-    args: ["--vm", "1", "--vm-bytes", "250M", "--vm-hang", "1"]
-
+    - name: memory-demo-2-ctr
+      image: polinux/stress
+      resources:
+        requests:
+          memory: "50Mi"
+        limits:
+          memory: "100Mi"
+      command: ["stress"]
+      args: ["--vm", "1", "--vm-bytes", "250M", "--vm-hang", "1"]
 ```
 
 In the args section of the configuration file, you can see that the Container will attempt to allocate 250 MiB of memory, which is well above the 100 MiB limit.
 
 Create the Pod
 
-``` shell
+```shell
 kubectl create -f k8s-website/tasks/pods/resource/memory-request-limit2.yaml \
 	--namespace=mem-example
 ```
 
 View detailed information about the pod:
 
-``` shell
+```shell
 NAME            READY   STATUS             RESTARTS   AGE
 memory-demo-2   0/1     CrashLoopBackOff   12         11h
 ```
 
 More Details:
 
-``` yaml
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -852,29 +894,29 @@ metadata:
   uid: e1bc61ff-1f80-11e9-b1db-080027a87ba3
 spec:
   containers:
-  - args:
-    - --vm
-    - "1"
-    - --vm-bytes
-    - 250M
-    - --vm-hang
-    - "1"
-    command:
-    - stress
-    image: polinux/stress
-    imagePullPolicy: Always
-    name: memory-demo-2-ctr
-    resources:
-      limits:
-        memory: 100Mi
-      requests:
-        memory: 50Mi
-    terminationMessagePath: /dev/termination-log
-    terminationMessagePolicy: File
-    volumeMounts:
-    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-      name: default-token-9pcb2
-      readOnly: true
+    - args:
+        - --vm
+        - "1"
+        - --vm-bytes
+        - 250M
+        - --vm-hang
+        - "1"
+      command:
+        - stress
+      image: polinux/stress
+      imagePullPolicy: Always
+      name: memory-demo-2-ctr
+      resources:
+        limits:
+          memory: 100Mi
+        requests:
+          memory: 50Mi
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+          name: default-token-9pcb2
+          readOnly: true
   dnsPolicy: ClusterFirst
   nodeName: minikube
   restartPolicy: Always
@@ -884,67 +926,66 @@ spec:
   serviceAccountName: default
   terminationGracePeriodSeconds: 30
   tolerations:
-  - effect: NoExecute
-    key: node.kubernetes.io/not-ready
-    operator: Exists
-    tolerationSeconds: 300
-  - effect: NoExecute
-    key: node.kubernetes.io/unreachable
-    operator: Exists
-    tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
   volumes:
-  - name: default-token-9pcb2
-    secret:
-      defaultMode: 420
-      secretName: default-token-9pcb2
+    - name: default-token-9pcb2
+      secret:
+        defaultMode: 420
+        secretName: default-token-9pcb2
 status:
   conditions:
-  - lastProbeTime: null
-    lastTransitionTime: "2019-01-24T02:36:41Z"
-    status: "True"
-    type: Initialized
-  - lastProbeTime: null
-    lastTransitionTime: "2019-01-24T14:33:33Z"
-    message: 'containers with unready status: [memory-demo-2-ctr]'
-    reason: ContainersNotReady
-    status: "False"
-    type: Ready
-  - lastProbeTime: null
-    lastTransitionTime: "2019-01-24T02:36:41Z"
-    status: "True"
-    type: PodScheduled
+    - lastProbeTime: null
+      lastTransitionTime: "2019-01-24T02:36:41Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2019-01-24T14:33:33Z"
+      message: "containers with unready status: [memory-demo-2-ctr]"
+      reason: ContainersNotReady
+      status: "False"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2019-01-24T02:36:41Z"
+      status: "True"
+      type: PodScheduled
   containerStatuses:
-  - containerID: docker://e73ad654ad797c9f4df4e75f515ed86ef119af8c95d402e285a3bd57e96f9ef9
-    image: polinux/stress:latest
-    imageID: docker-pullable://polinux/stress@sha256:6d1825288ddb6b3cec8d3ac8a488c8ec2449334512ecb938483fc2b25cbbdb9a
-    lastState:
-      terminated:
-        containerID: docker://5e679ae4117899ccb8d71234e12446403497ce4f06a3586de0c0e2210f4bc51a
-        exitCode: 1
-        finishedAt: "2019-01-24T14:33:00Z"
-        reason: OOMKilled
-        startedAt: "2019-01-24T14:33:00Z"
-    name: memory-demo-2-ctr
-    ready: false
-    restartCount: 13
-    state:
-      terminated:
-        containerID: docker://e73ad654ad797c9f4df4e75f515ed86ef119af8c95d402e285a3bd57e96f9ef9
-        exitCode: 1
-        finishedAt: "2019-01-24T14:33:32Z"
-        reason: OOMKilled
-        startedAt: "2019-01-24T14:33:32Z"
+    - containerID: docker://e73ad654ad797c9f4df4e75f515ed86ef119af8c95d402e285a3bd57e96f9ef9
+      image: polinux/stress:latest
+      imageID: docker-pullable://polinux/stress@sha256:6d1825288ddb6b3cec8d3ac8a488c8ec2449334512ecb938483fc2b25cbbdb9a
+      lastState:
+        terminated:
+          containerID: docker://5e679ae4117899ccb8d71234e12446403497ce4f06a3586de0c0e2210f4bc51a
+          exitCode: 1
+          finishedAt: "2019-01-24T14:33:00Z"
+          reason: OOMKilled
+          startedAt: "2019-01-24T14:33:00Z"
+      name: memory-demo-2-ctr
+      ready: false
+      restartCount: 13
+      state:
+        terminated:
+          containerID: docker://e73ad654ad797c9f4df4e75f515ed86ef119af8c95d402e285a3bd57e96f9ef9
+          exitCode: 1
+          finishedAt: "2019-01-24T14:33:32Z"
+          reason: OOMKilled
+          startedAt: "2019-01-24T14:33:32Z"
   hostIP: 10.0.2.15
   phase: Running
   podIP: 172.17.0.7
   qosClass: Burstable
   startTime: "2019-01-24T02:36:41Z"
-
 ```
 
 `kubectl describe pod memory-demo-2 --namespace=mem-example`
 
-``` shell
+```shell
 Name:         memory-demo-2
 Namespace:    mem-example
 Node:         minikube/10.0.2.15
@@ -987,9 +1028,9 @@ Containers:
       /var/run/secrets/kubernetes.io/serviceaccount from default-token-9pcb2 (ro)
 Conditions:
   Type           Status
-  Initialized    True 
-  Ready          False 
-  PodScheduled   True 
+  Initialized    True
+  Ready          False
+  PodScheduled   True
 Volumes:
   default-token-9pcb2:
     Type:        Secret (a volume populated by a Secret)
@@ -1008,7 +1049,7 @@ Events:
 
 `kubectl describe nodes`
 
-``` shell
+```shell
 Name:               minikube
 Roles:              master
 Labels:             beta.kubernetes.io/arch=amd64
@@ -1082,7 +1123,8 @@ Events:              <none>
 
 Delete your Pod:
 
-``` shell
+```shell
 kubectl delete pod memory-demo-2 --namespace=mem-example
 ```
+
 [Contd.]
